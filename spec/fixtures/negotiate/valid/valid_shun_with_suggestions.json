@@ -1,0 +1,15 @@
+{
+  "version": "0.1", "profile": "quack-negotiate-v0", "verb": "shun",
+  "id": "shun-suggest-01", "timestamp": "2026-06-05T14:00:03.000Z",
+  "source": "executor", "destination": "planner", "context": "k8s/prod/web",
+  "correlation": "dabble-suggest-01", "risk": "low",
+  "summary": "k8s-rollout-restart unavailable — maintenance window active",
+  "data": {
+    "reasonCode": "skill_unavailable",
+    "reason": "Rollout restart is currently gated by an active maintenance window for namespace 'prod'. The window ends at 2026-06-05T14:15:00Z.",
+    "suggestedSkillIds": ["k8s-scale-replicas"],
+    "suggestedConstraintRelaxation": {
+      "deadline": "extend beyond 2026-06-05T14:15:00.000Z"
+    }
+  }
+}

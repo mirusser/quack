@@ -1,0 +1,20 @@
+{
+  "expectedRejection": "risk_above_agent_max",
+  "description": "Frame risk=critical exceeds agent maxRisk=high",
+  "agentMaxRisk": "high",
+  "frame": {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "splash",
+    "id": "01JQAHX1Z4W3M9N5P8R2V6K0J7",
+    "timestamp": "2026-06-05T12:00:00.000Z",
+    "source": "observer",
+    "context": "ctx-1",
+    "risk": "critical",
+    "data": {
+      "evidenceArtifacts": [
+        { "kind": "k8s.events", "digest": "sha256:7e3a1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab", "uri": "artifact://ev" }
+      ]
+    }
+  }
+}

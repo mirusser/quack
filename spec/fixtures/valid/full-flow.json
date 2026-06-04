@@ -1,15 +1,15 @@
 [
   {
-    "version": 1,
+    "version": "0.1",
     "verb": "quack",
     "id": "01JQA1X5Z8W7M3N9P2R6V0K4B1",
     "source": "observer",
     "context": "k8s/default/web",
-    "risk": "m",
+    "risk": "medium",
     "summary": "deployment unavailable"
   },
   {
-    "version": 1,
+    "version": "0.1",
     "verb": "splash",
     "id": "01JQA2X6Z9W8M4N0P3R7W1V5C2D3",
     "source": "observer",
@@ -26,33 +26,33 @@
     }
   },
   {
-    "version": 1,
+    "version": "0.1",
     "verb": "egg",
     "id": "01JQA3Y7A0X9N5P1Q4S8X2W6D3E4",
     "source": "planner",
     "destination": "executor",
     "context": "k8s/default/web",
     "correlation": "plan-456",
-    "risk": "m",
+    "risk": "medium",
     "digest": "sha256:8d1f2e3c4b5a6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
     "summary": "restart deployment plan",
     "data": { "eggId": "01JQA3Y7A0X9N5P1Q4S8X2W6D3E4" }
   },
   {
-    "version": 1,
+    "version": "0.1",
     "verb": "hatch",
     "id": "01JQA4Z8B1Y0P6Q2R5T9Y3X7E4F5",
     "source": "executor",
     "destination": "human",
     "context": "k8s/default/web",
     "correlation": "plan-456",
-    "risk": "m",
+    "risk": "medium",
     "ttl": 300000,
     "summary": "approval required",
     "data": { "eggId": "01JQA3Y7A0X9N5P1Q4S8X2W6D3E4" }
   },
   {
-    "version": 1,
+    "version": "0.1",
     "verb": "bob",
     "id": "01JQA5A9C2Z1Q7R3S6U0Z4Y8F5G6",
     "source": "human",
@@ -62,20 +62,20 @@
     "summary": "approved"
   },
   {
-    "version": 1,
+    "version": "0.1",
     "verb": "flap",
     "id": "01JQA6B0D3A2R8S4T7V1A5Z9G6H7",
     "source": "executor",
     "destination": "gateway",
     "context": "k8s/default/web",
     "correlation": "plan-456",
-    "risk": "m",
+    "risk": "medium",
     "digest": "sha256:8d1f2e3c4b5a6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
     "summary": "execute approved plan",
     "data": { "eggId": "01JQA3Y7A0X9N5P1Q4S8X2W6D3E4" }
   },
   {
-    "version": 1,
+    "version": "0.1",
     "verb": "perch",
     "id": "01JQA7C1E4B3S9T5U8W2B6A0H7I8",
     "source": "gateway",

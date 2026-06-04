@@ -1,0 +1,44 @@
+[
+  {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "dabble",
+    "id": "dabble-multi-01", "timestamp": "2026-06-05T14:00:00.000Z",
+    "source": "planner", "destination": "executor", "context": "k8s/prod/web", "risk": "medium",
+    "data": {
+      "taskIntent": "Restart or scale down deployment 'web' to reduce memory pressure.",
+      "requiredCapabilities": ["k8s-exec"],
+      "preferredSkills": ["k8s-rollout-restart", "k8s-scale-replicas"]
+    }
+  },
+  {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "preen",
+    "id": "preen-multi-01", "timestamp": "2026-06-05T14:00:01.000Z",
+    "source": "executor", "destination": "planner", "context": "k8s/prod/web",
+    "correlation": "dabble-multi-01", "risk": "medium",
+    "data": {
+      "skillId": "k8s-rollout-restart", "applicability": "full",
+      "constraints": { "freshnessWindow": "5m" }, "assuranceLevel": "high"
+    }
+  },
+  {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "preen",
+    "id": "preen-multi-02", "timestamp": "2026-06-05T14:00:01.500Z",
+    "source": "executor", "destination": "planner", "context": "k8s/prod/web",
+    "correlation": "dabble-multi-01", "risk": "medium",
+    "data": {
+      "skillId": "k8s-scale-replicas", "applicability": "conditional",
+      "applicabilityNotes": "Requires HPA suspension during scale operation.",
+      "constraints": { "maxReplicas": 10 }, "assuranceLevel": "medium"
+    }
+  },
+  {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "settle",
+    "id": "settle-multi-01", "timestamp": "2026-06-05T14:00:05.000Z",
+    "source": "planner", "destination": "executor", "context": "k8s/prod/web",
+    "correlation": "preen-multi-01", "risk": "medium",
+    "data": {
+      "negotiationId": "neg-multi-001", "skillId": "k8s-rollout-restart",
+      "agreedConstraints": { "freshnessWindow": "5m" }, "agreedAssuranceLevel": "high",
+      "validFrom": "2026-06-05T14:00:05.000Z", "validUntil": "2026-06-05T14:05:05.000Z"
+    }
+  }
+]

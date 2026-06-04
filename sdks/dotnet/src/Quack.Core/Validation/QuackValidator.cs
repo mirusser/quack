@@ -18,8 +18,8 @@ public sealed class QuackValidator : IQuackValidator
         var errors = new List<QuackError>();
 
         // Basic presence checks
-        if (frame.Version < 1)
-            errors.Add(Err(QuackRule.InvalidFrame, "Version must be >= 1"));
+        if (string.IsNullOrWhiteSpace(frame.Version))
+            errors.Add(Err(QuackRule.InvalidFrame, "Version is required"));
 
         if (string.IsNullOrEmpty(frame.Id))
             errors.Add(Err(QuackRule.InvalidFrame, "Id is required"));

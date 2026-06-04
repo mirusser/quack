@@ -1,0 +1,20 @@
+[
+  {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "molt",
+    "id": "01JQA8X2Z5W4M0N6P9R3V7K1B8",
+    "timestamp": "2026-06-05T12:05:30.000Z",
+    "source": "executor",
+    "context": "anomaly-default-web",
+    "correlation": "plan-001",
+    "risk": "none",
+    "data": {
+      "terminalFor": "challenge",
+      "reasonCode": "CHALLENGE_EXPIRED",
+      "reason": "Approval window expired — challenge-abc timed out after 5 minutes",
+      "planId": "plan-001",
+      "challengeId": "challenge-abc"
+    }
+  }
+]

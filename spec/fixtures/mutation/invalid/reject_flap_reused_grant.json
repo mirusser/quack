@@ -1,0 +1,91 @@
+{
+  "expectedRejection": "single_execution_violation",
+  "description": "Flap against a plan that already has a successful perch — single-execution policy",
+  "seedFrames": [
+    {
+      "version": "0.1", "profile": "quack-mutation-v0", "verb": "splash",
+      "id": "seed-splash-01", "timestamp": "2026-06-05T12:00:00.000Z",
+      "source": "observer", "context": "ctx-1", "risk": "none",
+      "data": {
+        "evidenceArtifacts": [
+          { "kind": "k8s.events", "digest": "sha256:7e3a1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab", "uri": "artifact://ev" }
+        ]
+      }
+    },
+    {
+      "version": "0.1", "profile": "quack-mutation-v0", "verb": "egg",
+      "id": "seed-egg-01", "timestamp": "2026-06-05T12:00:01.000Z",
+      "source": "planner", "destination": "executor", "context": "ctx-1",
+      "correlation": "plan-reused", "risk": "high",
+      "data": {
+        "planId": "plan-already-executed",
+        "mutationIntent": { "action": "restart" },
+        "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+        "reviewSurface": { "requester": "planner" },
+        "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+        "evidenceArtifacts": [
+          { "kind": "k8s.events", "digest": "sha256:7e3a1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab", "uri": "artifact://ev" }
+        ],
+        "approvalPolicy": "same-subject",
+        "executionReusePolicy": "single-execution",
+        "validFrom": "2026-06-05T12:00:01.000Z",
+        "validUntil": "2026-06-05T13:00:01.000Z",
+        "freshnessPolicy": {}
+      }
+    },
+    {
+      "version": "0.1", "profile": "quack-mutation-v0", "verb": "hatch",
+      "id": "seed-hatch-01", "timestamp": "2026-06-05T12:00:02.000Z",
+      "source": "executor", "destination": "approval-service", "context": "ctx-1",
+      "correlation": "plan-reused", "risk": "high",
+      "data": {
+        "planId": "plan-already-executed", "challengeId": "ch-seed-01",
+        "approvalUrl": "https://approve.example.com/ch-seed-01",
+        "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+        "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+        "challengeExpiresAt": "2026-06-05T12:05:00.000Z"
+      }
+    },
+    {
+      "version": "0.1", "profile": "quack-mutation-v0", "verb": "flap",
+      "id": "seed-flap-01", "timestamp": "2026-06-05T12:00:10.000Z",
+      "source": "executor", "destination": "gateway", "context": "ctx-1",
+      "correlation": "plan-reused", "risk": "high",
+      "data": {
+        "planId": "plan-already-executed", "grantId": "grant-first",
+        "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+        "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+        "preExecutionGates": ["resource-quota-check"]
+      }
+    },
+    {
+      "version": "0.1", "profile": "quack-mutation-v0", "verb": "perch",
+      "id": "seed-perch-01", "timestamp": "2026-06-05T12:00:12.000Z",
+      "source": "gateway", "destination": "executor", "context": "ctx-1",
+      "correlation": "plan-reused", "risk": "high",
+      "data": {
+        "planId": "plan-already-executed", "executionId": "exec-seed-01",
+        "outcome": "succeeded", "observedAt": "2026-06-05T12:00:12.000Z"
+      }
+    }
+  ],
+  "frame": {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "flap",
+    "id": "01JQAEX8Z1W0M6N2P5R9V3K7G4",
+    "timestamp": "2026-06-05T12:00:20.000Z",
+    "source": "executor",
+    "destination": "gateway",
+    "context": "ctx-1",
+    "correlation": "plan-reused",
+    "risk": "high",
+    "data": {
+      "planId": "plan-already-executed",
+      "grantId": "grant-second",
+      "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "preExecutionGates": ["resource-quota-check"]
+    }
+  }
+}

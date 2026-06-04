@@ -14,6 +14,6 @@ public sealed class QuackOptions
     /// <summary>Maximum accepted TTL in ms. Frames exceeding this are rejected.</summary>
     public int? MaxTtl { get; set; }
 
-    /// <summary>Maximum accepted Quack protocol version.</summary>
-    public int MaxQuackVersion { get; set; } = 1;
+    /// <summary>Maximum accepted Quack protocol version as a semantic version string (e.g. "0.1").</summary>
+    public string MaxQuackVersion { get; set; } = "0.1";
 }

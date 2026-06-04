@@ -24,4 +24,13 @@ public sealed class CompositeTraceSink(IEnumerable<ITraceSink> sinks) : ITraceSi
             try { sink.WriteRejection(frame, result); } catch { /* fire-and-forget */ }
         }
     }
+
+    /// <inheritdoc />
+    public void WriteStructured(QuackFrame frame)
+    {
+        foreach (var sink in _sinks)
+        {
+            try { sink.WriteStructured(frame); } catch { /* fire-and-forget */ }
+        }
+    }
 }

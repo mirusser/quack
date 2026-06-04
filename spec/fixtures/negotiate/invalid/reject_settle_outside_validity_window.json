@@ -1,0 +1,15 @@
+{
+  "expectedRejection": "settle_outside_contract_validity_window",
+  "description": "Settle validUntil is in the past",
+  "frame": {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "settle",
+    "id": "settle-expired-01", "timestamp": "2026-06-05T14:00:05.000Z",
+    "source": "planner", "destination": "executor", "context": "k8s/prod/web",
+    "correlation": "preen-expired-01", "risk": "medium",
+    "data": {
+      "negotiationId": "neg-expired", "skillId": "k8s-rollout-restart",
+      "agreedConstraints": {}, "agreedAssuranceLevel": "high",
+      "validFrom": "2020-01-01T00:00:00.000Z", "validUntil": "2020-01-02T00:00:00.000Z"
+    }
+  }
+}

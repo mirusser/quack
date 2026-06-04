@@ -1,0 +1,17 @@
+{
+  "expectedRejection": "preen_skill_not_in_agent_card",
+  "description": "Preen offers a skillId that is not in the agent's Agent Card skills[] list",
+  "agentCardSkills": ["k8s-rollout-restart", "k8s-scale-replicas"],
+  "frame": {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "preen",
+    "id": "preen-unknownskill-01", "timestamp": "2026-06-05T14:00:02.000Z",
+    "source": "executor", "destination": "planner", "context": "k8s/prod/web",
+    "correlation": "dabble-unknown-01", "risk": "medium",
+    "data": {
+      "skillId": "k8s-unknown-skill-id",
+      "applicability": "full",
+      "constraints": {},
+      "assuranceLevel": "high"
+    }
+  }
+}

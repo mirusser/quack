@@ -11,4 +11,9 @@
   <Project Path="tests/Quack.AspNetCore.Tests/Quack.AspNetCore.Tests.csproj" />
   <Project Path="tests/Quack.A2A.Tests/Quack.A2A.Tests.csproj" />
   <Project Path="tests/Quack.Testing.Tests/Quack.Testing.Tests.csproj" />
+  <Project Path="src/Quack.Mutation/Quack.Mutation.csproj" />
+  <Project Path="tests/Quack.Mutation.Tests/Quack.Mutation.Tests.csproj" />
+  <Project Path="src/Quack.Negotiate/Quack.Negotiate.csproj" />
+  <Project Path="tests/Quack.Negotiate.Tests/Quack.Negotiate.Tests.csproj" />
+  <Project Path="src/Quack.Conformance/Quack.Conformance.csproj" />
 </Solution>

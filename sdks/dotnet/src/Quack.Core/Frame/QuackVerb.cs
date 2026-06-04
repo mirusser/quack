@@ -1,11 +1,13 @@
 namespace Quack;
 
 /// <summary>
-/// The 11 Quack verbs. Each verb maps to a duck-natural metaphor
-/// and carries a semantic contract defined by the protocol spec.
+/// Quack verbs — 11 core verbs plus 4 negotiate-profile verbs.
+/// Each verb maps to a duck-natural metaphor and carries a semantic contract.
 /// </summary>
 public enum QuackVerb
 {
+    // ── Core protocol verbs (§2) ──
+
     /// <summary>🦆 Announce — "Something happened."</summary>
     Quack,
     /// <summary>🐤 Request — "Please do this."</summary>
@@ -28,4 +30,15 @@ public enum QuackVerb
     Molt,
     /// <summary>💦 Attach evidence — "Here is the evidence."</summary>
     Splash,
+
+    // ── Negotiate-profile verbs (quack-negotiate-v0) ──
+
+    /// <summary>🔍 Query capabilities — "Given this task, what can you do?"</summary>
+    Dabble,
+    /// <summary>🪶 Offer capability — "For this task I can provide skill X."</summary>
+    Preen,
+    /// <summary>✅ Accept negotiation — "I accept your offer and bind the contract."</summary>
+    Settle,
+    /// <summary>🚫 Reject negotiation — "I cannot or will not engage."</summary>
+    Shun,
 }

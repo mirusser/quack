@@ -16,7 +16,7 @@ public sealed class QuackEmitterTests
         Assert.IsNotNull(result.Frame);
         Assert.IsFalse(string.IsNullOrEmpty(result.Frame!.Id));
         Assert.AreEqual("test-agent", result.Frame!.Source);
-        Assert.AreEqual(1, result.Frame!.Version);
+        Assert.AreEqual("0.1", result.Frame!.Version);
         Assert.IsNotNull(result.Frame!.Timestamp);
     }
 
@@ -66,7 +66,7 @@ public sealed class QuackEmitterTests
         var emitter = new QuackEmitter(new NoopQuackSink(), new QuackValidator(), options);
         var frame = new QuackFrame
         {
-            Version = 1,
+            Version = "0.1",
             Verb = QuackVerb.Peck,
             Id = QuackId.NewId(),
             Source = "client",
@@ -82,9 +82,9 @@ public sealed class QuackEmitterTests
     [TestMethod]
     public async Task Emitter_VersionExceedsMaxQuackVersion_ReturnsInvalidFrame()
     {
-        var options = new QuackOptions { AgentName = "test", MaxQuackVersion = 1 };
+        var options = new QuackOptions { AgentName = "test", MaxQuackVersion = "0.1" };
         var emitter = new QuackEmitter(new NoopQuackSink(), new QuackValidator(), options);
-        var frame = QuackFrame.Quack("test") with { Version = 2 };
+        var frame = QuackFrame.Quack("test") with { Version = "2.0" };
 
         var result = await emitter.EmitAsync(frame);
 

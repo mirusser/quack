@@ -37,10 +37,10 @@ public sealed partial record QuackFrame
     {
         return new QuackFrame
         {
-            Version = 1,
+            Version = "0.1",
             Verb = verb,
             Id = QuackId.NewId(),
-            Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+            Timestamp = DateTimeOffset.UtcNow.ToString("o"),
             Source = source,
             Destination = destination,
             Context = context,

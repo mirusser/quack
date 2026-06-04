@@ -1,0 +1,23 @@
+{
+  "expectedRejection": "flap_requires_approval_grant",
+  "description": "Flap with egg and hatch in history but no bob (approval grant)",
+  "frame": {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "flap",
+    "id": "01JQABX5Z8W7M3N9P2R6V0K4D1",
+    "timestamp": "2026-06-05T12:00:10.000Z",
+    "source": "executor",
+    "destination": "gateway",
+    "context": "ctx-1",
+    "correlation": "no-grant-correlation",
+    "risk": "high",
+    "data": {
+      "planId": "plan-001",
+      "grantId": "grant-xyz",
+      "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "preExecutionGates": ["resource-quota-check"]
+    }
+  }
+}

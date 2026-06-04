@@ -42,7 +42,7 @@ public sealed class QuackValidatorTests
     {
         var frame = new QuackFrame
         {
-            Version = 1,
+            Version = "0.1",
             Verb = QuackVerb.Honk,
             Id = QuackId.NewId(),
             Source = "gateway",
@@ -69,7 +69,7 @@ public sealed class QuackValidatorTests
     {
         var frame = new QuackFrame
         {
-            Version = 1,
+            Version = "0.1",
             Verb = QuackVerb.Molt,
             Id = QuackId.NewId(),
             Source = "gateway",
@@ -86,7 +86,7 @@ public sealed class QuackValidatorTests
     {
         var frame = new QuackFrame
         {
-            Version = 1,
+            Version = "0.1",
             Verb = QuackVerb.Splash,
             Id = QuackId.NewId(),
             Source = "observer",
@@ -114,7 +114,7 @@ public sealed class QuackValidatorTests
     {
         var frame = new QuackFrame
         {
-            Version = 1,
+            Version = "0.1",
             Verb = QuackVerb.Peck,
             Id = QuackId.NewId(),
             Source = "client",
@@ -143,7 +143,7 @@ public sealed class QuackValidatorTests
     {
         var frame = new QuackFrame
         {
-            Version = 1,
+            Version = "0.1",
             Verb = QuackVerb.Egg,
             Id = QuackId.NewId(),
             Source = "planner",

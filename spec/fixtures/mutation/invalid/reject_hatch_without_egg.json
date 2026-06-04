@@ -1,0 +1,23 @@
+{
+  "expectedRejection": "hatch_requires_egg",
+  "frame": {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "hatch",
+    "id": "01JQAAX4Z7W6M2N8P1R5V9K3C0",
+    "timestamp": "2026-06-05T12:00:02.000Z",
+    "source": "executor",
+    "destination": "approval-service",
+    "context": "ctx-1",
+    "correlation": "no-egg-correlation",
+    "risk": "high",
+    "data": {
+      "planId": "plan-no-egg",
+      "challengeId": "challenge-001",
+      "approvalUrl": "https://approve.example.com/challenge-001",
+      "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "challengeExpiresAt": "2026-06-05T12:05:00.000Z"
+    }
+  }
+}

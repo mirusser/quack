@@ -1,0 +1,30 @@
+{
+  "expectedRejection": "egg_requires_prior_splash",
+  "frame": {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "egg",
+    "id": "01JQA9X3Z6W5M1N7P0R4V8K2B9",
+    "timestamp": "2026-06-05T12:00:01.000Z",
+    "source": "planner",
+    "destination": "executor",
+    "context": "no-splash-context",
+    "correlation": "plan-001",
+    "risk": "high",
+    "data": {
+      "planId": "plan-001",
+      "mutationIntent": { "action": "restart" },
+      "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "reviewSurface": {},
+      "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "evidenceArtifacts": [
+        { "kind": "k8s.events", "digest": "sha256:7e3a1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab", "uri": "artifact://ev" }
+      ],
+      "approvalPolicy": "same-subject",
+      "executionReusePolicy": "single-execution",
+      "validFrom": "2026-06-05T12:00:00.000Z",
+      "validUntil": "2026-06-05T13:00:00.000Z",
+      "freshnessPolicy": {}
+    }
+  }
+}

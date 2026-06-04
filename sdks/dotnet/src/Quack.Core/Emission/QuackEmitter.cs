@@ -26,13 +26,13 @@ public sealed class QuackEmitter(
         frame = frame with
         {
             Id = string.IsNullOrEmpty(frame.Id) ? QuackId.NewId() : frame.Id,
-            Timestamp = frame.Timestamp ?? DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+            Timestamp = frame.Timestamp ?? DateTimeOffset.UtcNow.ToString("o"),
             Source = string.IsNullOrEmpty(frame.Source) ? _options.AgentName : frame.Source,
-            Version = frame.Version < 1 ? 1 : frame.Version,
+            Version = string.IsNullOrEmpty(frame.Version) ? "0.1" : frame.Version,
         };
 
         // Version gate
-        if (frame.Version > _options.MaxQuackVersion)
+        if (CompareVersions(frame.Version, _options.MaxQuackVersion) > 0)
         {
             var err = new QuackError("VERSION_EXCEEDS_MAX", $"Version {frame.Version} exceeds max {_options.MaxQuackVersion}", QuackRule.InvalidFrame);
             var result = QuackResult.Rejected(err);
@@ -72,5 +72,12 @@ public sealed class QuackEmitter(
         if (deliveryResult.IsRejected)
             _traceSink?.WriteRejection(frame, deliveryResult);
         return deliveryResult;
+    }
+
+    private static int CompareVersions(string a, string b)
+    {
+        if (Version.TryParse(a, out var va) && Version.TryParse(b, out var vb))
+            return va.CompareTo(vb);
+        return string.Compare(a, b, StringComparison.OrdinalIgnoreCase);
     }
 }

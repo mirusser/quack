@@ -3,17 +3,18 @@ namespace Quack;
 /// <summary>
 /// Risk level for gating delivery at the protocol level.
 /// Ordered: None &lt; Low &lt; Medium &lt; High &lt; Critical.
+/// Wire values are the lowercase names: "none", "low", "medium", "high", "critical".
 /// </summary>
 public enum QuackRisk
 {
-    /// <summary>n — No risk. Informational.</summary>
+    /// <summary>none — No risk. Informational.</summary>
     None = 0,
-    /// <summary>l — Minimal impact. Routine.</summary>
+    /// <summary>low — Minimal impact. Routine.</summary>
     Low = 1,
-    /// <summary>m — Moderate impact. Requires attention.</summary>
+    /// <summary>medium — Moderate impact. Requires attention.</summary>
     Medium = 2,
-    /// <summary>h — Significant impact. Requires approval.</summary>
+    /// <summary>high — Significant impact. Requires approval.</summary>
     High = 3,
-    /// <summary>c — Severe impact. Maximum scrutiny.</summary>
+    /// <summary>critical — Severe impact. Maximum scrutiny.</summary>
     Critical = 4,
 }

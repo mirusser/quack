@@ -1,0 +1,23 @@
+{
+  "expectedRejection": "settle_constraints_must_not_exceed_preen",
+  "description": "Settle adds 'extraConstraint' not present in the preen — cannot unilaterally add constraints",
+  "preen": {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "preen",
+    "id": "preen-relax-01", "timestamp": "2026-06-05T14:00:02.000Z",
+    "source": "executor", "destination": "planner", "context": "k8s/prod/web",
+    "correlation": "dabble-relax-01", "risk": "medium",
+    "data": { "skillId": "k8s-rollout-restart", "applicability": "full", "constraints": { "max": "5" }, "assuranceLevel": "high" }
+  },
+  "frame": {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "settle",
+    "id": "settle-relax-01", "timestamp": "2026-06-05T14:00:05.000Z",
+    "source": "planner", "destination": "executor", "context": "k8s/prod/web",
+    "correlation": "preen-relax-01", "risk": "medium",
+    "data": {
+      "negotiationId": "neg-relax", "skillId": "k8s-rollout-restart",
+      "agreedConstraints": { "max": "5", "extraConstraint": "disallowed" },
+      "agreedAssuranceLevel": "high",
+      "validFrom": "2026-06-05T14:00:05.000Z", "validUntil": "2026-06-05T14:05:05.000Z"
+    }
+  }
+}

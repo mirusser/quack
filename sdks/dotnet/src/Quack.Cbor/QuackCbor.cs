@@ -23,6 +23,10 @@ public static class QuackCbor
     private const int KeyData = 12;
     private const int KeyTtl = 13;
     private const int KeyTone = 14;
+    // Profile-extension keys (15+)
+    private const int KeyProfile = 15;
+    private const int KeyExpiresAt = 16;
+    private const int KeyTaskId = 17;
 
     /// <summary>Encode a frame to deterministic CBOR bytes.</summary>
     public static byte[] Encode(QuackFrame frame)
@@ -33,7 +37,7 @@ public static class QuackCbor
         writer.WriteStartMap(null);
 
         writer.WriteInt32(KeyVersion);
-        writer.WriteInt32(frame.Version);
+        writer.WriteTextString(frame.Version);
 
         writer.WriteInt32(KeyVerb);
         writer.WriteTextString(frame.Verb.ToString().ToLowerInvariant());
@@ -44,10 +48,10 @@ public static class QuackCbor
             writer.WriteTextString(frame.Id);
         }
 
-        if (frame.Timestamp.HasValue)
+        if (frame.Timestamp is { } ts)
         {
             writer.WriteInt32(KeyTimestamp);
-            writer.WriteInt64(frame.Timestamp.Value);
+            writer.WriteTextString(ts);
         }
 
         writer.WriteInt32(KeySource);
@@ -104,6 +108,24 @@ public static class QuackCbor
             WriteJsonElement(writer, data);
         }
 
+        if (frame.Profile is { } profile)
+        {
+            writer.WriteInt32(KeyProfile);
+            writer.WriteTextString(profile);
+        }
+
+        if (frame.ExpiresAt is { } expiresAt)
+        {
+            writer.WriteInt32(KeyExpiresAt);
+            writer.WriteTextString(expiresAt);
+        }
+
+        if (frame.TaskId is { } taskId)
+        {
+            writer.WriteInt32(KeyTaskId);
+            writer.WriteTextString(taskId);
+        }
+
         writer.WriteEndMap();
         return writer.Encode();
     }
@@ -124,10 +146,10 @@ public static class QuackCbor
             var key = reader.ReadInt32();
             switch (key)
             {
-                case KeyVersion: frame = frame with { Version = reader.ReadInt32() }; break;
+                case KeyVersion: frame = frame with { Version = reader.ReadTextString() }; break;
                 case KeyVerb: frame = frame with { Verb = ParseVerb(reader.ReadTextString()) }; break;
                 case KeyId: frame = frame with { Id = reader.ReadTextString() }; break;
-                case KeyTimestamp: frame = frame with { Timestamp = reader.ReadInt64() }; break;
+                case KeyTimestamp: frame = frame with { Timestamp = reader.ReadTextString() }; break;
                 case KeySource: frame = frame with { Source = reader.ReadTextString() }; break;
                 case KeyDestination: frame = frame with { Destination = reader.ReadTextString() }; break;
                 case KeyContext: frame = frame with { Context = reader.ReadTextString() }; break;
@@ -141,6 +163,9 @@ public static class QuackCbor
                     var json = ReadJsonElement(reader);
                     frame = frame with { Data = json };
                     break;
+                case KeyProfile: frame = frame with { Profile = reader.ReadTextString() }; break;
+                case KeyExpiresAt: frame = frame with { ExpiresAt = reader.ReadTextString() }; break;
+                case KeyTaskId: frame = frame with { TaskId = reader.ReadTextString() }; break;
                 default:
                     reader.SkipValue();
                     break;
@@ -153,12 +178,12 @@ public static class QuackCbor
 
     private static string SerializeRisk(QuackRisk risk) => risk switch
     {
-        QuackRisk.None => "n",
-        QuackRisk.Low => "l",
-        QuackRisk.Medium => "m",
-        QuackRisk.High => "h",
-        QuackRisk.Critical => "c",
-        _ => "n",
+        QuackRisk.None => "none",
+        QuackRisk.Low => "low",
+        QuackRisk.Medium => "medium",
+        QuackRisk.High => "high",
+        QuackRisk.Critical => "critical",
+        _ => "none",
     };
 
     private static string SerializeTone(QuackTone tone) => tone switch
@@ -183,16 +208,20 @@ public static class QuackCbor
         "honk" => QuackVerb.Honk,
         "molt" => QuackVerb.Molt,
         "splash" => QuackVerb.Splash,
+        "dabble" => QuackVerb.Dabble,
+        "preen" => QuackVerb.Preen,
+        "settle" => QuackVerb.Settle,
+        "shun" => QuackVerb.Shun,
         _ => throw new FormatException($"Unknown CBOR verb: {value}"),
     };
 
     private static QuackRisk ParseRisk(string value) => value.ToLowerInvariant() switch
     {
-        "n" => QuackRisk.None,
-        "l" => QuackRisk.Low,
-        "m" => QuackRisk.Medium,
-        "h" => QuackRisk.High,
-        "c" => QuackRisk.Critical,
+        "n" or "none" => QuackRisk.None,
+        "l" or "low" => QuackRisk.Low,
+        "m" or "medium" => QuackRisk.Medium,
+        "h" or "high" => QuackRisk.High,
+        "c" or "critical" => QuackRisk.Critical,
         _ => QuackRisk.None,
     };
 

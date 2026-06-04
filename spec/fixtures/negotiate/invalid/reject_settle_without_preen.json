@@ -1,0 +1,14 @@
+{
+  "expectedRejection": "settle_requires_preen",
+  "frame": {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "settle",
+    "id": "settle-nopreen-01", "timestamp": "2026-06-05T14:00:05.000Z",
+    "source": "planner", "destination": "executor", "context": "k8s/prod/web",
+    "correlation": "nonexistent-preen-id", "risk": "medium",
+    "data": {
+      "negotiationId": "neg-001", "skillId": "k8s-rollout-restart",
+      "agreedConstraints": {}, "agreedAssuranceLevel": "high",
+      "validFrom": "2026-06-05T14:00:05.000Z", "validUntil": "2026-06-05T14:05:05.000Z"
+    }
+  }
+}

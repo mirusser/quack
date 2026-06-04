@@ -1,9 +1,9 @@
 {
-  "version": 1,
+  "version": "0.1",
   "verb": "quack",
   "id": "01JQA1X5Z8W7M3N9P2R6V0K4B1",
   "source": "observer",
   "context": "k8s/default/web",
-  "risk": "m",
+  "risk": "medium",
   "summary": "deployment unavailable"
 }

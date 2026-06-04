@@ -51,6 +51,8 @@ public sealed class CompositeTraceSinkTests
         public void Write(QuackFrame frame) => WriteCount++;
 
         public void WriteRejection(QuackFrame frame, QuackResult result) => WriteRejectionCount++;
+
+        public void WriteStructured(QuackFrame frame) => WriteCount++;
     }
 
     private sealed class ThrowingTraceSink : ITraceSink
@@ -58,5 +60,7 @@ public sealed class CompositeTraceSinkTests
         public void Write(QuackFrame frame) => throw new InvalidOperationException("test failure");
 
         public void WriteRejection(QuackFrame frame, QuackResult result) => throw new InvalidOperationException("test failure");
+
+        public void WriteStructured(QuackFrame frame) => throw new InvalidOperationException("test failure");
     }
 }

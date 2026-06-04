@@ -1,0 +1,23 @@
+{
+  "expectedRejection": "intent_or_review_digest_mismatch",
+  "description": "Flap intentDigest does not match the stored egg",
+  "frame": {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "flap",
+    "id": "01JQACX6Z9W8M4N0P3R7V1K5E2",
+    "timestamp": "2026-06-05T12:00:10.000Z",
+    "source": "executor",
+    "destination": "gateway",
+    "context": "ctx-1",
+    "correlation": "plan-digest-mismatch",
+    "risk": "high",
+    "data": {
+      "planId": "plan-001",
+      "grantId": "grant-xyz",
+      "intentDigest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "preExecutionGates": ["resource-quota-check"]
+    }
+  }
+}

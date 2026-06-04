@@ -51,6 +51,24 @@ Quack Frame model.
 Quack does not require agents to speak JSON.
 It only asks them to quack clearly.
 
+## 🧩 Where Quack Fits
+
+The agent protocol stack has a gap at the semantic coordination layer. A2A handles
+discovery and transport, MCP handles tool access — but nothing standardizes what agents
+actually *say* to each other. Quack fills that gap.
+
+| Layer | Existing standard | What it does | What's missing |
+|---|---|---|---|
+| Discovery | A2A Agent Cards | "What agents exist and what can they do?" | — |
+| Transport | A2A (JSON-RPC, gRPC, HTTP) | "How do messages flow between agents?" | — |
+| Task Lifecycle | A2A Task model | "Is this task pending, running, done?" | — |
+| **Semantic Coordination** | **Nothing standard** | **"What does this message mean?"** | **Quack fills this** |
+| Tool Access | MCP | "How does an agent call a tool?" | — |
+| Orchestration | LangGraph, CrewAI, etc. | "How do I build multi-agent workflows?" | — |
+
+Quack rides inside A2A as an extension — it adds typed semantic envelopes
+(risk-gated, digest-bound, sequence-validated) on top of A2A's transport layer.
+
 ## 🔐 Proof Chain for Mutations
 
 ```

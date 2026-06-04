@@ -8,7 +8,7 @@ public sealed class QuackFrameTests
     {
         var frame = new QuackFrame();
 
-        Assert.AreEqual(0, frame.Version);
+        Assert.AreEqual("0.1", frame.Version);
         Assert.AreEqual(default(QuackVerb), frame.Verb);
         Assert.AreEqual(string.Empty, frame.Id);
         Assert.IsNull(frame.Timestamp);
@@ -29,7 +29,7 @@ public sealed class QuackFrameTests
     {
         var original = new QuackFrame
         {
-            Version = 1,
+            Version = "0.1",
             Verb = QuackVerb.Quack,
             Id = "01JQA1X5Z8W7M3N9P2R6V0K4B1",
             Source = "observer",
@@ -50,10 +50,15 @@ public sealed class QuackFrameTests
 public sealed class QuackVerbTests
 {
     [TestMethod]
-    public void QuackVerb_Has11Members()
+    public void QuackVerb_HasCoreAndNegotiateVerbs()
     {
         var values = Enum.GetValues<QuackVerb>();
-        Assert.AreEqual(11, values.Length);
+        // 11 core + 4 negotiate-profile verbs
+        Assert.AreEqual(15, values.Length);
+        CollectionAssert.Contains(values, QuackVerb.Dabble);
+        CollectionAssert.Contains(values, QuackVerb.Preen);
+        CollectionAssert.Contains(values, QuackVerb.Settle);
+        CollectionAssert.Contains(values, QuackVerb.Shun);
     }
 }
 

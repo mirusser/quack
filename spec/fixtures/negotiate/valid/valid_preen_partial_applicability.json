@@ -1,0 +1,15 @@
+{
+  "version": "0.1", "profile": "quack-negotiate-v0", "verb": "preen",
+  "id": "preen-partial-01", "timestamp": "2026-06-05T14:00:02.000Z",
+  "source": "executor", "destination": "planner", "context": "k8s/prod/web",
+  "correlation": "dabble-partial-01", "risk": "medium",
+  "summary": "Partial match — can scale but quota increase required first",
+  "data": {
+    "skillId": "k8s-scale-replicas",
+    "applicability": "partial",
+    "applicabilityNotes": "Scale operation is applicable but current namespace quota is at 90% — a quota increase request must be approved before this skill can run safely.",
+    "constraints": { "maxReplicas": 5, "requiresQuotaHeadroom": "20%" },
+    "assuranceLevel": "medium",
+    "preExecutionGates": ["quota-headroom-check"]
+  }
+}

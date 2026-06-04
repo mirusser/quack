@@ -29,7 +29,7 @@ public sealed class QuackServiceCollectionExtensionsTests
             options.AgentName = "test-agent";
             options.MaxRisk = QuackRisk.Medium;
             options.MaxTtl = 500;
-            options.MaxQuackVersion = 2;
+            options.MaxQuackVersion = "2.0";
         });
         using var provider = services.BuildServiceProvider();
 
@@ -40,7 +40,7 @@ public sealed class QuackServiceCollectionExtensionsTests
         Assert.AreEqual("test-agent", options.AgentName);
         Assert.AreEqual(QuackRisk.Medium, options.MaxRisk);
         Assert.AreEqual(500, options.MaxTtl);
-        Assert.AreEqual(2, options.MaxQuackVersion);
+        Assert.AreEqual("2.0", options.MaxQuackVersion);
     }
 
     [TestMethod]

@@ -8,7 +8,7 @@ public sealed class QuackFrameFactoryTests
     {
         var frame = QuackFrame.Quack("observer");
 
-        Assert.AreEqual(1, frame.Version);
+        Assert.AreEqual("0.1", frame.Version);
         Assert.AreEqual(QuackVerb.Quack, frame.Verb);
         Assert.AreEqual("observer", frame.Source);
         Assert.AreEqual(QuackRisk.None, frame.Risk);

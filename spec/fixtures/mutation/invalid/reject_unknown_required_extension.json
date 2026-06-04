@@ -1,0 +1,9 @@
+{
+  "expectedRejection": "extension_support_required",
+  "description": "Agent declares quack-mutation-v0 as required=true but client did not activate the extension in A2A-Extensions header",
+  "request": {
+    "missingHeader": "A2A-Extensions",
+    "requiredExtensionUri": "https://example.org/extensions/quack-mutation/v0",
+    "a2aVersion": "1.0"
+  }
+}

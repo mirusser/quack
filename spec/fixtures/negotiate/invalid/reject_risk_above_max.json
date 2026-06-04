@@ -1,0 +1,11 @@
+{
+  "expectedRejection": "risk_above_agent_max",
+  "agentMaxRisk": "high",
+  "frame": {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "dabble",
+    "id": "dabble-risk-01", "timestamp": "2026-06-05T14:00:00.000Z",
+    "source": "planner", "destination": "executor", "context": "k8s/prod/web",
+    "risk": "critical",
+    "data": { "taskIntent": "Critical op", "requiredCapabilities": ["k8s-exec"] }
+  }
+}

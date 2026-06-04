@@ -32,6 +32,10 @@ public sealed class LoggerTraceSink(ILogger logger) : ITraceSink
         }
     }
 
+    /// <inheritdoc />
+    public void WriteStructured(QuackFrame frame) =>
+        _logger.LogInformation("{StructuredTrace}", QuackTraceFormatter.FormatStructured(frame));
+
     internal static string EmojiFor(QuackVerb verb) => verb switch
     {
         QuackVerb.Quack => "🦆",
@@ -45,6 +49,10 @@ public sealed class LoggerTraceSink(ILogger logger) : ITraceSink
         QuackVerb.Honk => "🪿",
         QuackVerb.Molt => "🪹",
         QuackVerb.Splash => "💦",
+        QuackVerb.Dabble => "🔍",
+        QuackVerb.Preen => "🪶",
+        QuackVerb.Settle => "✅",
+        QuackVerb.Shun => "🚫",
         _ => "❓",
     };
 }
@@ -78,4 +86,8 @@ public sealed class LoggerTraceSink<T>(ILogger<T> logger) : ITraceSink
             Write(nack);
         }
     }
+
+    /// <inheritdoc />
+    public void WriteStructured(QuackFrame frame) =>
+        _logger.LogInformation("{StructuredTrace}", QuackTraceFormatter.FormatStructured(frame));
 }

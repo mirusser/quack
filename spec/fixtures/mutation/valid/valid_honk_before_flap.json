@@ -1,0 +1,37 @@
+[
+  {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "honk",
+    "id": "01JQA6X0Z3W2M8N4P7R1V5K9B6",
+    "timestamp": "2026-06-05T12:00:05.000Z",
+    "source": "gateway",
+    "context": "anomaly-default-web",
+    "correlation": "plan-001",
+    "risk": "medium",
+    "data": {
+      "reasonCode": "QUOTA_WARNING",
+      "reason": "Quota approaching limit — proceeding with caution",
+      "planId": "plan-001"
+    }
+  },
+  {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "flap",
+    "id": "01JQA7X1Z4W3M9N5P8R2V6K0B7",
+    "timestamp": "2026-06-05T12:00:10.000Z",
+    "source": "executor",
+    "destination": "gateway",
+    "context": "anomaly-default-web",
+    "correlation": "plan-001",
+    "risk": "high",
+    "data": {
+      "planId": "plan-001",
+      "grantId": "grant-xyz",
+      "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "preExecutionGates": ["resource-quota-check"]
+    }
+  }
+]

@@ -6,8 +6,8 @@ namespace Quack;
 /// </summary>
 public sealed partial record QuackFrame
 {
-    /// <summary>Protocol version (1 for v0.1).</summary>
-    public int Version { get; init; }
+    /// <summary>Protocol version as a semantic version string ("0.1" for v0.1).</summary>
+    public string Version { get; init; } = "0.1";
 
     /// <summary>The semantic verb for this frame.</summary>
     public QuackVerb Verb { get; init; }
@@ -15,8 +15,8 @@ public sealed partial record QuackFrame
     /// <summary>ULID frame identifier — unique per frame.</summary>
     public string Id { get; init; } = string.Empty;
 
-    /// <summary>Unix milliseconds timestamp when the frame was created.</summary>
-    public long? Timestamp { get; init; }
+    /// <summary>ISO 8601 UTC timestamp when the frame was created.</summary>
+    public string? Timestamp { get; init; }
 
     /// <summary>Emitting agent or component.</summary>
     public string Source { get; init; } = string.Empty;
@@ -44,6 +44,21 @@ public sealed partial record QuackFrame
 
     /// <summary>Decorative tone. No semantic effect.</summary>
     public QuackTone? Tone { get; init; }
+
+    /// <summary>
+    /// Profile identifier for profile extensions (e.g. "quack-mutation-v0", "quack-negotiate-v0").
+    /// Omitted for core Quack frames.
+    /// </summary>
+    public string? Profile { get; init; }
+
+    /// <summary>
+    /// ISO 8601 UTC freshness bound for this frame. Profile-specific alternative to Ttl.
+    /// A receiver treats an expiresAt in the past as an elapsed TTL — staleness, not rejection.
+    /// </summary>
+    public string? ExpiresAt { get; init; }
+
+    /// <summary>A2A task scope. Set when the frame belongs to a specific A2A task.</summary>
+    public string? TaskId { get; init; }
 
     /// <summary>Verb-structured payload as a JSON element map.</summary>
     public JsonElement? Data { get; init; }

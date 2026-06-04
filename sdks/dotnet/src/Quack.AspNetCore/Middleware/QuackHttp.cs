@@ -55,7 +55,7 @@ public static class QuackHttp
         {
             switch (key.ToLowerInvariant())
             {
-                case "version": frame = frame with { Version = int.TryParse(value, out var v) ? v : 0 }; break;
+                case "version": frame = frame with { Version = value }; break;
                 case "verb": frame = frame with { Verb = ParseVerb(value) }; break;
                 case "id": frame = frame with { Id = value }; break;
                 case "source": frame = frame with { Source = value }; break;
@@ -135,6 +135,10 @@ public static class QuackHttp
         "honk" => QuackVerb.Honk,
         "molt" => QuackVerb.Molt,
         "splash" => QuackVerb.Splash,
+        "dabble" => QuackVerb.Dabble,
+        "preen" => QuackVerb.Preen,
+        "settle" => QuackVerb.Settle,
+        "shun" => QuackVerb.Shun,
         _ => QuackVerb.Quack,
     };
 

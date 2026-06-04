@@ -1,0 +1,10 @@
+{
+  "expectedRejection": "negotiation_requires_destination",
+  "description": "Negotiate frame has no destination — all negotiate frames are point-to-point",
+  "frame": {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "dabble",
+    "id": "dabble-nodst-01", "timestamp": "2026-06-05T14:00:00.000Z",
+    "source": "planner", "context": "k8s/prod/web", "risk": "medium",
+    "data": { "taskIntent": "Restart deployment", "requiredCapabilities": ["k8s-exec"] }
+  }
+}

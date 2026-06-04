@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Quack.Negotiate</RootNamespace>
+    <AssemblyName>Quack.Negotiate</AssemblyName>
+    <Description>Quack negotiate profile — context-aware skill negotiation between agents.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Quack.Core\Quack.Core.csproj" />
+  </ItemGroup>
+</Project>

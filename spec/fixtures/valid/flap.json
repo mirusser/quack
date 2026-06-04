@@ -1,12 +1,12 @@
 {
-  "version": 1,
+  "version": "0.1",
   "verb": "flap",
   "id": "01JQA8E2G6D5U9V0X3C7B1I8J9",
   "source": "executor",
   "destination": "gateway",
   "context": "k8s/default/web",
   "correlation": "plan-456",
-  "risk": "m",
+  "risk": "medium",
   "digest": "sha256:8d1f2e3c4b5a6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
   "summary": "execute approved plan",
   "data": {

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Quack.Conformance</RootNamespace>
+    <AssemblyName>quack-conform</AssemblyName>
+    <Description>Quack protocol conformance test runner — verifies agent implementations against the spec fixtures.</Description>
+  </PropertyGroup>
+</Project>

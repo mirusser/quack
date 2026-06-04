@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Quack.Mutation</RootNamespace>
+    <AssemblyName>Quack.Mutation</AssemblyName>
+    <Description>Quack mutation profile — digest-bound mutation frames, state machine, and A2A integration.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Quack.Core\Quack.Core.csproj" />
+  </ItemGroup>
+</Project>

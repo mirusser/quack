@@ -1,11 +1,11 @@
 {
-  "version": 1,
+  "version": "0.1",
   "verb": "honk",
   "id": "01JQAA0G4H8F7W1X2Z5E9D3K0L1",
   "source": "gateway",
   "context": "k8s/default/web",
   "correlation": "plan-456",
-  "risk": "h",
+  "risk": "high",
   "summary": "digest mismatch; execution blocked",
   "data": {
     "reason": "intent digest does not match approved plan"

@@ -21,15 +21,15 @@ A Quack Frame is the canonical abstract model. All encodings round-trip through 
 
 | Field | Name | Required | Type | Purpose |
 |---|---|---|---|---|
-| Protocol version | `version` | ✅ | int | `1` for v0.1 |
+| Protocol version | `version` | ✅ | string | `"0.1"` for v0.1 |
 | Verb | `verb` | ✅ | string | One of the 11 verbs (§2) |
 | Frame ID | `id` | ✅ | string | ULID — unique quack identifier |
-| Timestamp | `timestamp` | ❌ | unix ms | When the frame was created |
+| Timestamp | `timestamp` | ❌ | ISO 8601 UTC | When the frame was created |
 | Source | `source` | ✅ | string | Emitting agent or component |
 | Destination | `destination` | ❌ | string | Target agent. Omitted = pond-wide (§1.4) |
 | Context | `context` | ❌ | string | Logical grouping scope (e.g., "k8s/default/web") |
 | Correlation | `correlation` | ❌ | string | Links frames into a sequence |
-| Risk | `risk` | ❌ | `n` \| `l` \| `m` \| `h` \| `c` | none / low / medium / high / critical (§1.3) |
+| Risk | `risk` | ❌ | string | `none`, `low`, `medium`, `high`, or `critical` (§1.3) |
 | Summary | `summary` | ❌ | string | Human-readable one-liner |
 | Digest | `digest` | ❌ | string | Digest binding (e.g., "sha256:abc...") |
 | Time to live | `ttl` | ❌ | int | Relative freshness window in ms from `timestamp` (§3.3) |
@@ -49,14 +49,14 @@ Frame IDs are ULIDs — 26-character, sortable, URL-safe identifiers. They provi
 Risk gates delivery at the protocol level. Each agent declares its maximum accepted risk in its A2A Agent Card (§7). A frame whose `risk` exceeds the receiver's declared threshold is rejected before delivery — the receiver never sees it.
 
 | Wire | Value | Meaning |
-|---|---|---|
-| `n` | none | No risk. Informational. |
-| `l` | low | Minimal impact. Routine. |
-| `m` | medium | Moderate impact. Requires attention. |
-| `h` | high | Significant impact. Requires approval. |
-| `c` | critical | Severe impact. Maximum scrutiny. |
+|---|---|---|---|
+| `none` | none | No risk. Informational. |
+| `low` | low | Minimal impact. Routine. |
+| `medium` | medium | Moderate impact. Requires attention. |
+| `high` | high | Significant impact. Requires approval. |
+| `critical` | critical | Severe impact. Maximum scrutiny. |
 
-Risk is ordered: `n < l < m < h < c`. A `maxRisk: medium` agent accepts `n`, `l`, `m` and rejects `h`, `c`.
+Risk is ordered: `none < low < medium < high < critical`. A `maxRisk: medium` agent accepts `none`, `low`, `medium` and rejects `high`, `critical`.
 
 ### 1.4 Addressing
 
@@ -258,20 +258,20 @@ Quack-Text does not carry binary payloads inline. Evidence and artifacts are ref
 Binary encoding using CBOR (RFC 8949). Integer keys for compactness.
 
 | CBOR key | Field |
-|---|---|---|
-| 1 | `version` |
+|---|---|---|---|
+| 1 | `version` (string, e.g. `"0.1"`) |
 | 2 | `verb` |
 | 3 | `id` |
-| 4 | `timestamp` |
+| 4 | `timestamp` (ISO 8601 string) |
 | 5 | `source` |
 | 6 | `destination` |
 | 7 | `context` |
 | 8 | `correlation` |
-| 9 | `risk` |
+| 9 | `risk` (string: `"none"`, `"low"`, `"medium"`, `"high"`, `"critical"`) |
 | 10 | `digest` |
 | 11 | `summary` |
 | 12 | `data` |
-| 13 | `ttl` |
+| 13 | `ttl` (int, ms) |
 | 14 | `tone` |
 
 Media type: `application/vnd.quack+cbor`
@@ -282,14 +282,14 @@ JSON encoding for A2A interoperability. Lowercase field names match the canonica
 
 ```json
 {
-  "version": 1,
+  "version": "0.1",
   "verb": "egg",
   "id": "01JQA3Y7A0X9N",
   "source": "planner",
   "destination": "executor",
   "context": "k8s/default/web",
   "correlation": "plan-456",
-  "risk": "m",
+  "risk": "medium",
   "ttl": 3600000,
   "tone": "serious-duck",
   "digest": "sha256:abc123",
@@ -307,7 +307,7 @@ Media type: `application/vnd.quack+json`
 For HTTP header injection, Quack frames may be encoded as HTTP Structured Fields (RFC 9651). This is the recommended encoding for `Quack` and `Quack-Trace` headers.
 
 ```http
-Quack: version=1, verb="egg", id="01JQA3Y7A0X9N", source="planner", destination="executor", context="k8s/default/web", correlation="plan-456", risk="m", summary="restart deployment plan"
+Quack: version="0.1", verb="egg", id="01JQA3Y7A0X9N", source="planner", destination="executor", context="k8s/default/web", correlation="plan-456", risk="medium", summary="restart deployment plan"
 Quack-Trace: context="k8s/default/web", correlation="plan-456"
 ```
 
@@ -320,7 +320,7 @@ Quack-HTTP is optional. Quack-Text (inline `QK1 ...` string in a single header v
 Core Quack uses `ttl` (relative milliseconds from `timestamp`) for freshness. Profile specifications such as `quack-mutation-v0` project this into an absolute `expiresAt` (ISO 8601 UTC) field when they target A2A container semantics. The projection rule is:
 
 ```
-expiresAt = (frame.timestamp || now) + frame.ttl
+expiresAt = frame.timestamp + frame.ttl (in ms)
 ```
 
 A profile that carries `expiresAt` in its frame model MUST round-trip it through the core `ttl` field. Receivers MUST treat `expiresAt` in the past the same way they treat an elapsed `ttl` — receiver-side staleness, not a protocol-level rejection.
@@ -377,7 +377,7 @@ interfaces, each interface advertises its A2A `protocolVersion`.
         "params": {
           "maxRisk": "high",
           "maxTtl": 3600000,
-          "maxQuackVersion": 1,
+          "maxQuackVersion": "0.1",
           "supportedEncodings": [
             "application/vnd.quack+json",
             "text/vnd.quack"
@@ -432,14 +432,14 @@ is not used.
     { "text": "Proposed restart plan." },
     {
       "data": {
-        "version": 1,
+  "version": "0.1",
         "verb": "egg",
         "id": "01JQA3Y7A0X9N",
         "source": "planner",
         "destination": "executor",
         "context": "k8s/default/web",
         "correlation": "plan-456",
-        "risk": "m",
+  "risk": "medium",
         "digest": "sha256:abc123",
         "summary": "restart deployment plan",
         "data": { "eggId": "01JQA3Y7A0X9N" }
@@ -488,14 +488,14 @@ A machine-readable structured trace format (no emoji, aligned columns, explicit 
 
 ## 9. Versioning
 
-The protocol version is carried in `version`. v0.1 = `1`.
+The protocol version is carried in `version` as a semantic version string. v0.1 = `"0.1"`.
 
 When a parser encounters a frame with a higher `version` value:
 
 - If the frame is structurally parseable (known fields present and valid), accept it. Ignore unknown fields.
 - If the frame cannot be parsed (unknown verb, missing required field of a known type), reject it with `nack`.
 
-This means `version=2` frames are accepted by `version=1` parsers as long as the core frame structure is intact. Senders should use the Agent Card's declared `maxQuackVersion` to avoid emitting frames that a receiver cannot understand (negotiation is planned for a future version).
+This means `version="0.2"` frames are accepted by `version="0.1"` parsers as long as the core frame structure is intact. Senders should use the Agent Card's declared `maxQuackVersion` to avoid emitting frames that a receiver cannot understand (negotiation is planned for a future version).
 
 ---
 

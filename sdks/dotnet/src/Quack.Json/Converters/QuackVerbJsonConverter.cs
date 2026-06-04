@@ -21,6 +21,10 @@ internal sealed class QuackVerbJsonConverter : JsonConverter<QuackVerb>
             "honk" => QuackVerb.Honk,
             "molt" => QuackVerb.Molt,
             "splash" => QuackVerb.Splash,
+            "dabble" => QuackVerb.Dabble,
+            "preen" => QuackVerb.Preen,
+            "settle" => QuackVerb.Settle,
+            "shun" => QuackVerb.Shun,
             _ => throw new JsonException($"Unknown verb: {verb}"),
         };
     }

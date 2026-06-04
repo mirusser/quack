@@ -1,0 +1,23 @@
+{
+  "expectedRejection": "plan_validity_window_expired",
+  "description": "Flap against an egg whose validUntil has passed",
+  "frame": {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "flap",
+    "id": "01JQADX7Z0W9M5N1P4R8V2K6F3",
+    "timestamp": "2026-06-05T12:00:10.000Z",
+    "source": "executor",
+    "destination": "gateway",
+    "context": "ctx-1",
+    "correlation": "plan-expired",
+    "risk": "high",
+    "data": {
+      "planId": "plan-expired",
+      "grantId": "grant-xyz",
+      "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "preExecutionGates": ["resource-quota-check"]
+    }
+  }
+}

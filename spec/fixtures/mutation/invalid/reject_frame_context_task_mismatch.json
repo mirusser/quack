@@ -1,0 +1,20 @@
+{
+  "expectedRejection": "a2a_context_task_mismatch",
+  "description": "Frame context field does not match the A2A container contextId",
+  "containerContextId": "correct-context",
+  "frame": {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "splash",
+    "id": "01JQAFX9Z2W1M7N3P6R0V4K8H5",
+    "timestamp": "2026-06-05T12:00:00.000Z",
+    "source": "observer",
+    "context": "different-context",
+    "risk": "none",
+    "data": {
+      "evidenceArtifacts": [
+        { "kind": "k8s.events", "digest": "sha256:7e3a1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab", "uri": "artifact://ev" }
+      ]
+    }
+  }
+}

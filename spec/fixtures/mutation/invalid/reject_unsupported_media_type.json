@@ -1,0 +1,22 @@
+{
+  "expectedRejection": "unsupported_quack_media_type",
+  "description": "A2A Part carries wrong mediaType — must be application/vnd.quack+json",
+  "part": {
+    "mediaType": "application/json",
+    "data": {
+      "version": "0.1",
+      "profile": "quack-mutation-v0",
+      "verb": "splash",
+      "id": "01JQAGX0Z3W2M8N4P7R1V5K9I6",
+      "timestamp": "2026-06-05T12:00:00.000Z",
+      "source": "observer",
+      "context": "ctx-1",
+      "risk": "none",
+      "data": {
+        "evidenceArtifacts": [
+          { "kind": "k8s.events", "digest": "sha256:7e3a1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab", "uri": "artifact://ev" }
+        ]
+      }
+    }
+  }
+}

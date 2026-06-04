@@ -11,7 +11,7 @@ public sealed class QuackOptionsTests
         Assert.AreEqual("quack-agent", options.AgentName);
         Assert.AreEqual(QuackRisk.High, options.MaxRisk);
         Assert.IsNull(options.MaxTtl);
-        Assert.AreEqual(1, options.MaxQuackVersion);
+        Assert.AreEqual("0.1", options.MaxQuackVersion);
     }
 
     [TestMethod]
@@ -22,12 +22,12 @@ public sealed class QuackOptionsTests
             AgentName = "configured-agent",
             MaxRisk = QuackRisk.Low,
             MaxTtl = 250,
-            MaxQuackVersion = 2,
+            MaxQuackVersion = "2.0",
         };
 
         Assert.AreEqual("configured-agent", options.AgentName);
         Assert.AreEqual(QuackRisk.Low, options.MaxRisk);
         Assert.AreEqual(250, options.MaxTtl);
-        Assert.AreEqual(2, options.MaxQuackVersion);
+        Assert.AreEqual("2.0", options.MaxQuackVersion);
     }
 }

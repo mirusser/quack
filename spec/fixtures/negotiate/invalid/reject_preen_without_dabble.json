@@ -1,0 +1,13 @@
+{
+  "expectedRejection": "preen_requires_prior_dabble",
+  "frame": {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "preen",
+    "id": "preen-nodabble-01", "timestamp": "2026-06-05T14:00:02.000Z",
+    "source": "executor", "destination": "planner", "context": "k8s/prod/web",
+    "correlation": "nonexistent-dabble-id", "risk": "medium",
+    "data": {
+      "skillId": "k8s-rollout-restart", "applicability": "full",
+      "constraints": {}, "assuranceLevel": "high"
+    }
+  }
+}

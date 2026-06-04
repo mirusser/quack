@@ -1,0 +1,11 @@
+{
+  "expectedRejection": "frame_expired",
+  "description": "Frame expiresAt is in the past",
+  "frame": {
+    "version": "0.1", "profile": "quack-negotiate-v0", "verb": "dabble",
+    "id": "dabble-expired-01", "timestamp": "2020-01-01T00:00:00.000Z",
+    "source": "planner", "destination": "executor", "context": "k8s/prod/web",
+    "risk": "medium", "expiresAt": "2020-01-01T00:05:00.000Z",
+    "data": { "taskIntent": "Stale negotiation attempt", "requiredCapabilities": ["k8s-exec"] }
+  }
+}

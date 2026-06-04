@@ -1,0 +1,110 @@
+[
+  {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "splash",
+    "id": "01JQA1X5Z8W7M3N9P2R6V0K4B1",
+    "timestamp": "2026-06-05T12:00:00.000Z",
+    "source": "observer",
+    "context": "anomaly-default-web",
+    "risk": "none",
+    "data": {
+      "evidenceArtifacts": [
+        {
+          "kind": "k8s.events",
+          "digest": "sha256:7e3a1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+          "uri": "artifact://events/default/web",
+          "mediaType": "application/json"
+        }
+      ]
+    }
+  },
+  {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "egg",
+    "id": "01JQA2X6Z9W8M4N0P3R7V1K5B2",
+    "timestamp": "2026-06-05T12:00:01.000Z",
+    "source": "planner",
+    "destination": "executor",
+    "context": "anomaly-default-web",
+    "correlation": "plan-001",
+    "risk": "high",
+    "data": {
+      "planId": "plan-001",
+      "mutationIntent": { "action": "rollout-restart", "deployment": "web", "namespace": "default" },
+      "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "reviewSurface": { "requester": "planner", "policy": "same-subject", "deployment": "web" },
+      "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "evidenceArtifacts": [
+        {
+          "kind": "k8s.events",
+          "digest": "sha256:7e3a1234567890abcdef1234567890abcdef1234567890abcdef1234567890ab",
+          "uri": "artifact://events/default/web"
+        }
+      ],
+      "approvalPolicy": "same-subject",
+      "executionReusePolicy": "single-execution",
+      "validFrom": "2026-06-05T12:00:01.000Z",
+      "validUntil": "2026-06-05T13:00:01.000Z",
+      "freshnessPolicy": { "maxAge": "5m" }
+    }
+  },
+  {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "hatch",
+    "id": "01JQA3X7Z0W9M5N1P4R8V2K6B3",
+    "timestamp": "2026-06-05T12:00:02.000Z",
+    "source": "executor",
+    "destination": "approval-service",
+    "context": "anomaly-default-web",
+    "correlation": "plan-001",
+    "risk": "high",
+    "data": {
+      "planId": "plan-001",
+      "challengeId": "challenge-abc",
+      "approvalUrl": "https://approve.example.com/challenge-abc",
+      "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "challengeExpiresAt": "2026-06-05T12:05:00.000Z"
+    }
+  },
+  {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "flap",
+    "id": "01JQA4X8Z1W0M6N2P5R9V3K7B4",
+    "timestamp": "2026-06-05T12:00:10.000Z",
+    "source": "executor",
+    "destination": "gateway",
+    "context": "anomaly-default-web",
+    "correlation": "plan-001",
+    "risk": "high",
+    "data": {
+      "planId": "plan-001",
+      "grantId": "grant-xyz",
+      "intentDigest": "sha256:8d1fabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "reviewDigest": "sha256:61adabcdef1234567890abcdef1234567890abcdef1234567890abcdef123456",
+      "preExecutionGates": ["resource-quota-check", "pdb-validation", "apiserver-health-check"]
+    }
+  },
+  {
+    "version": "0.1",
+    "profile": "quack-mutation-v0",
+    "verb": "perch",
+    "id": "01JQA5X9Z2W1M7N3P6R0V4K8B5",
+    "timestamp": "2026-06-05T12:00:12.000Z",
+    "source": "gateway",
+    "destination": "executor",
+    "context": "anomaly-default-web",
+    "correlation": "plan-001",
+    "risk": "high",
+    "data": {
+      "planId": "plan-001",
+      "executionId": "exec-001",
+      "outcome": "succeeded",
+      "observedAt": "2026-06-05T12:00:12.000Z"
+    }
+  }
+]

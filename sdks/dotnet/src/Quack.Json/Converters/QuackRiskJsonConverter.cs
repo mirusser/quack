@@ -23,11 +23,11 @@ internal sealed class QuackRiskJsonConverter : JsonConverter<QuackRisk>
     {
         var str = value switch
         {
-            QuackRisk.None => "n",
-            QuackRisk.Low => "l",
-            QuackRisk.Medium => "m",
-            QuackRisk.High => "h",
-            QuackRisk.Critical => "c",
+            QuackRisk.None => "none",
+            QuackRisk.Low => "low",
+            QuackRisk.Medium => "medium",
+            QuackRisk.High => "high",
+            QuackRisk.Critical => "critical",
             _ => throw new JsonException($"Unknown risk: {value}"),
         };
         writer.WriteStringValue(str);

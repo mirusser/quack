@@ -1,0 +1,74 @@
+[
+  {
+    "version": "0.1",
+    "profile": "quack-negotiate-v0",
+    "verb": "dabble",
+    "id": "01JQA8B2C3D4E5F6G7H8I9J0K1",
+    "timestamp": "2026-06-05T14:00:00.000Z",
+    "source": "planner",
+    "destination": "executor",
+    "context": "k8s/prod/web",
+    "risk": "medium",
+    "summary": "Restart deployment web in prod",
+    "data": {
+      "taskIntent": "Restart deployment 'web' in namespace 'prod' to recover from crashloop — 3 of 5 pods are failing with OOMKilled.",
+      "requiredCapabilities": ["k8s-exec", "prod-access"],
+      "constraints": {
+        "deadline": "2026-06-05T14:05:00.000Z",
+        "maxDowntime": "30s"
+      },
+      "preferredSkills": ["k8s-rollout-restart"]
+    }
+  },
+  {
+    "version": "0.1",
+    "profile": "quack-negotiate-v0",
+    "verb": "preen",
+    "id": "01JQA8C5F7H9J1L3N5P7R9T1V3",
+    "timestamp": "2026-06-05T14:00:02.000Z",
+    "source": "executor",
+    "destination": "planner",
+    "context": "k8s/prod/web",
+    "correlation": "01JQA8B2C3D4E5F6G7H8I9J0K1",
+    "risk": "medium",
+    "summary": "Can restart via rollout restart within 30s",
+    "data": {
+      "skillId": "k8s-rollout-restart",
+      "applicability": "full",
+      "constraints": {
+        "freshnessWindow": "5m",
+        "maxParallelRestarts": 1,
+        "requiresStableApiServer": true
+      },
+      "assuranceLevel": "high",
+      "applicabilityNotes": "Rollout restart is standard remediation for crashlooping deployments.",
+      "preExecutionGates": ["resource-quota-check", "pdb-validation", "apiserver-health-check"],
+      "estimatedDuration": "PT45S"
+    }
+  },
+  {
+    "version": "0.1",
+    "profile": "quack-negotiate-v0",
+    "verb": "settle",
+    "id": "01JQA8D7G9K1M3O5Q7S9U1W3Y5",
+    "timestamp": "2026-06-05T14:00:05.000Z",
+    "source": "planner",
+    "destination": "executor",
+    "context": "k8s/prod/web",
+    "correlation": "01JQA8C5F7H9J1L3N5P7R9T1V3",
+    "risk": "medium",
+    "summary": "Accepted: k8s-rollout-restart for prod/web",
+    "data": {
+      "negotiationId": "neg-01JQA8D7G9",
+      "skillId": "k8s-rollout-restart",
+      "agreedConstraints": {
+        "freshnessWindow": "5m",
+        "maxParallelRestarts": 1,
+        "requiresStableApiServer": true
+      },
+      "agreedAssuranceLevel": "high",
+      "validFrom": "2026-06-05T14:00:05.000Z",
+      "validUntil": "2026-06-05T14:05:05.000Z"
+    }
+  }
+]

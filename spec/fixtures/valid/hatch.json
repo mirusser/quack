@@ -1,12 +1,12 @@
 {
-  "version": 1,
+  "version": "0.1",
   "verb": "hatch",
   "id": "01JQA7D1F5C4T8U9W2B6A0H7I8",
   "source": "executor",
   "destination": "human",
   "context": "k8s/default/web",
   "correlation": "plan-456",
-  "risk": "m",
+  "risk": "medium",
   "ttl": 300000,
   "summary": "approval required",
   "data": {

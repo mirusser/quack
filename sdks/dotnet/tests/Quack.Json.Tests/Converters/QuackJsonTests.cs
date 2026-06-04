@@ -13,22 +13,31 @@ public sealed class QuackJsonTests
         Assert.IsTrue(json.Contains("\"verb\":\"quack\""));
         Assert.IsTrue(json.Contains("\"source\":\"observer\""));
         Assert.IsTrue(json.Contains("\"id\":"));
-        Assert.IsTrue(json.Contains("\"version\":1"));
+        Assert.IsTrue(json.Contains("\"version\":\"0.1\""));
     }
 
     [TestMethod]
-    public void Serialize_Risk_SerializesAsSingleChar()
+    public void Serialize_Risk_SerializesAsFullWord()
     {
         var frame = QuackFrame.Quack("test", risk: QuackRisk.High);
         var json = QuackJson.Serialize(frame);
 
-        Assert.IsTrue(json.Contains("\"risk\":\"h\""));
+        Assert.IsTrue(json.Contains("\"risk\":\"high\""));
     }
 
     [TestMethod]
     public void Deserialize_Risk_CaseInsensitive()
     {
-        var json = "{\"version\":1,\"verb\":\"quack\",\"id\":\"01JQA1\",\"source\":\"test\",\"risk\":\"H\"}";
+        var json = "{\"version\":\"0.1\",\"verb\":\"quack\",\"id\":\"01JQA1\",\"source\":\"test\",\"risk\":\"HIGH\"}";
+        var frame = QuackJson.Deserialize(json);
+
+        Assert.AreEqual(QuackRisk.High, frame.Risk);
+    }
+
+    [TestMethod]
+    public void Deserialize_Risk_ShortFormBackwardCompat()
+    {
+        var json = "{\"version\":\"0.1\",\"verb\":\"quack\",\"id\":\"01JQA1\",\"source\":\"test\",\"risk\":\"h\"}";
         var frame = QuackJson.Deserialize(json);
 
         Assert.AreEqual(QuackRisk.High, frame.Risk);
@@ -37,7 +46,7 @@ public sealed class QuackJsonTests
     [TestMethod]
     public void Deserialize_Risk_LongForm()
     {
-        var json = "{\"version\":1,\"verb\":\"quack\",\"id\":\"01JQA1\",\"source\":\"test\",\"risk\":\"critical\"}";
+        var json = "{\"version\":\"0.1\",\"verb\":\"quack\",\"id\":\"01JQA1\",\"source\":\"test\",\"risk\":\"critical\"}";
         var frame = QuackJson.Deserialize(json);
 
         Assert.AreEqual(QuackRisk.Critical, frame.Risk);
@@ -86,7 +95,7 @@ public sealed class QuackJsonTests
     [TestMethod]
     public void Deserialize_NullOptionalFields_AreNull()
     {
-        var json = "{\"version\":1,\"verb\":\"quack\",\"id\":\"01JQA1\",\"source\":\"test\"}";
+        var json = "{\"version\":\"0.1\",\"verb\":\"quack\",\"id\":\"01JQA1\",\"source\":\"test\"}";
         var frame = QuackJson.Deserialize(json);
 
         Assert.IsNull(frame.Destination);
@@ -101,12 +110,12 @@ public sealed class QuackJsonTests
     [TestMethod]
     public void Deserialize_UnknownVerb_Throws()
     {
-        var json = "{\"version\":1,\"verb\":\"tweet\",\"id\":\"01JQA1\",\"source\":\"test\"}";
+        var json = "{\"version\":\"0.1\",\"verb\":\"tweet\",\"id\":\"01JQA1\",\"source\":\"test\"}";
         try { QuackJson.Deserialize(json); Assert.Fail("Expected JsonException"); } catch (JsonException) { }
     }
 
     [TestMethod]
-    public void Serialize_All11Verbs_RoundTrip()
+    public void Serialize_AllVerbs_RoundTrip()
     {
         var verbs = Enum.GetValues<QuackVerb>();
         foreach (var verb in verbs)
@@ -124,7 +133,11 @@ public sealed class QuackJsonTests
                 QuackVerb.Bob => QuackFrame.Bob("test", "dst", "corr-1"),
                 QuackVerb.Nack => QuackFrame.Nack("test", "dst", "corr-1"),
                 QuackVerb.Perch => QuackFrame.Perch("test", "dst", "corr-1"),
-                _ => throw new InvalidOperationException(),
+                // Negotiate-profile verbs — constructed directly as frames (no core factory methods)
+                QuackVerb.Dabble or QuackVerb.Preen or QuackVerb.Settle or QuackVerb.Shun =>
+                    new QuackFrame { Version = "0.1", Verb = verb, Id = QuackId.NewId(), Source = "test",
+                        Destination = "dst", Profile = "quack-negotiate-v0" },
+                _ => throw new InvalidOperationException($"Unhandled verb: {verb}"),
             };
 
             var json = QuackJson.Serialize(frame);
