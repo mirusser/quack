@@ -1,0 +1,10 @@
+{
+  "q": 1,
+  "v": "bob",
+  "id": "01JQA3Z7B1Y0P4Q5S8X2W6D3E4",
+  "src": "planner",
+  "dst": "observer",
+  "ctx": "k8s/default/web",
+  "corr": "incident-789",
+  "say": "received, working on plan"
+}

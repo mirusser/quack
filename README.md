@@ -1,35 +1,73 @@
-Quack!
-A tiny semantic protocol for agent coordination.
+# 🦆 Quack!
 
-Quack runs on A2A.
-Quack speaks in typed envelopes.
-Quack never mutates without proof.
-Quack loudly when something is unsafe.
+**A tiny semantic protocol for agent coordination.**
 
-If an agent cannot express the next step as a clear quack, maybe it should not do it.
+> Quack rides inside [A2A](https://google.github.io/A2A/) as an extension.  
+> Quack speaks in typed envelopes.  
+> Quack never mutates without proof.  
+> Quack loudly when something is unsafe.
 
-Agents can still use natural language, but every meaningful coordination step must have a tiny typed Quack envelope next to it.
+If an agent cannot express the next step as a clear quack,
+maybe it should not do it.
 
-small
-injectable
-language-agnostic
-low-level
-usable with A2A
-not married to JSON
+Agents can still use natural language, but every meaningful coordination
+step must have a tiny typed Quack envelope next to it.
+
+> **Quack is:**
+>
+> small &nbsp;·&nbsp; injectable &nbsp;·&nbsp; language-agnostic
+> low-level &nbsp;·&nbsp; not married to JSON
+
+## 🪶 Verbs
+
+Eleven typed envelopes. Verb reference: [`spec/quack-verbs.md`](spec/quack-verbs.md).
+
+| Verb | Emoji | Kind | What it means |
+|------|-------|------|----------------|
+| `quack` | 🦆 | announce | "Something happened" |
+| `peck` | 🐤 | request | "Please do this" |
+| `bob` | 🦢 | ack | "Received / approved" |
+| `nack` | 🐦‍⬛ | reject | "Cannot do this" |
+| `splash` | 💦 | announce | "Here is the evidence" |
+| `egg` | 🥚 | request | "This is the plan" |
+| `hatch` | 🐣 | request | "Approve this plan" |
+| `flap` | 🪽 | request | "Execute the approved plan" |
+| `perch` | 🕊️ | announce | "Finished / landed" |
+| `honk` | 🪿 | alarm | "Something is wrong" |
+| `molt` | 🪹 | alarm | "Plan no longer valid" |
+
+## 📦 Encodings
+
+Four encodings, one canonical frame. All round-trip through the abstract
+Quack Frame model.
+
+| Encoding | Role | Priority |
+|----------|------|----------|
+| Quack-Text | Humans, injection, logging | **MUST** |
+| Quack-HTTP | A2A headers, agent cards | SHOULD |
+| Quack-JSON | A2A bodies, tooling | MAY |
+| Quack-CBOR | Machines, compact transport | MAY |
 
 Quack does not require agents to speak JSON.
 It only asks them to quack clearly.
 
-Quack is text-first, binary-ready, and JSON-friendly.
+## 🔐 Proof Chain for Mutations
 
-Text is for humans and injection.
-CBOR is for machines and compact transport.
-JSON is for A2A and interoperability.
+```
+💦 SPLASH  →  🥚 EGG  →  🐣 HATCH  →  🦢 BOB  →  🪽 FLAP
+(evidence)     (plan)     (human review)  (approval)   (execution)
+```
 
-No mutation without a FLAP. No FLAP without a HATCH. No HATCH without an EGG. No EGG without SPLASH.
+Human approval is out-of-band: the gateway emits `bob`/`nack` as a relay.
 
-All encodings MUST round-trip through the abstract Quack Frame model.
+Delivery rules: **risk gating**, **dst/addressing**, **ttl freshness**.
+→ [`spec/quack-0.1.md`](spec/quack-0.1.md)
 
-Quack-Text → Frame → Quack-JSON
-Quack-JSON → Frame → Quack-CBOR
-Quack-CBOR → Frame → Quack-Text
+## 📄 Specs
+
+| Document | What it covers |
+|----------|---------------|
+| [`spec/quack-0.1.md`](spec/quack-0.1.md) | Core protocol — frame model, verbs, encodings, delivery rules, A2A integration |
+| [`spec/quack-verbs.md`](spec/quack-verbs.md) | Quick-reference verb table |
+| [`spec/quack.schema.json`](spec/quack.schema.json) | JSON Schema for all 11 verbs |
+| [`spec/quack-mutation-v0.1.md`](spec/quack-mutation-v0.1.md) | A2A mutation profile — state machine, digest rules, conformance fixtures |

@@ -1,0 +1,87 @@
+[
+  {
+    "q": 1,
+    "v": "quack",
+    "id": "01JQA1X5Z8W7M3N9P2R6V0K4B1",
+    "src": "observer",
+    "ctx": "k8s/default/web",
+    "risk": "m",
+    "say": "deployment unavailable"
+  },
+  {
+    "q": 1,
+    "v": "splash",
+    "id": "01JQA2X6Z9W8M4N0P3R7W1V5C2D3",
+    "src": "observer",
+    "ctx": "k8s/default/web",
+    "corr": "plan-456",
+    "data": {
+      "evidence": [
+        {
+          "kind": "k8s.events",
+          "digest": "sha256:7e3a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0",
+          "uri": "artifact://events/default/web"
+        }
+      ]
+    }
+  },
+  {
+    "q": 1,
+    "v": "egg",
+    "id": "01JQA3Y7A0X9N5P1Q4S8X2W6D3E4",
+    "src": "planner",
+    "dst": "executor",
+    "ctx": "k8s/default/web",
+    "corr": "plan-456",
+    "risk": "m",
+    "hash": "sha256:8d1f2e3c4b5a6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
+    "say": "restart deployment plan",
+    "data": { "eggId": "01JQA3Y7A0X9N5P1Q4S8X2W6D3E4" }
+  },
+  {
+    "q": 1,
+    "v": "hatch",
+    "id": "01JQA4Z8B1Y0P6Q2R5T9Y3X7E4F5",
+    "src": "executor",
+    "dst": "human",
+    "ctx": "k8s/default/web",
+    "corr": "plan-456",
+    "risk": "m",
+    "ttl": 300000,
+    "say": "approval required",
+    "data": { "eggId": "01JQA3Y7A0X9N5P1Q4S8X2W6D3E4" }
+  },
+  {
+    "q": 1,
+    "v": "bob",
+    "id": "01JQA5A9C2Z1Q7R3S6U0Z4Y8F5G6",
+    "src": "human",
+    "dst": "executor",
+    "ctx": "k8s/default/web",
+    "corr": "plan-456",
+    "say": "approved"
+  },
+  {
+    "q": 1,
+    "v": "flap",
+    "id": "01JQA6B0D3A2R8S4T7V1A5Z9G6H7",
+    "src": "executor",
+    "dst": "gateway",
+    "ctx": "k8s/default/web",
+    "corr": "plan-456",
+    "risk": "m",
+    "hash": "sha256:8d1f2e3c4b5a6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
+    "say": "execute approved plan",
+    "data": { "eggId": "01JQA3Y7A0X9N5P1Q4S8X2W6D3E4" }
+  },
+  {
+    "q": 1,
+    "v": "perch",
+    "id": "01JQA7C1E4B3S9T5U8W2B6A0H7I8",
+    "src": "gateway",
+    "dst": "executor",
+    "ctx": "k8s/default/web",
+    "corr": "plan-456",
+    "say": "deployment restarted"
+  }
+]

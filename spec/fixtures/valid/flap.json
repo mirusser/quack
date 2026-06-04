@@ -1,0 +1,15 @@
+{
+  "q": 1,
+  "v": "flap",
+  "id": "01JQA8E2G6D5U9V0X3C7B1I8J9",
+  "src": "executor",
+  "dst": "gateway",
+  "ctx": "k8s/default/web",
+  "corr": "plan-456",
+  "risk": "m",
+  "hash": "sha256:8d1f2e3c4b5a6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
+  "say": "execute approved plan",
+  "data": {
+    "eggId": "01JQA6C0E4B3S7T8V1A5Z9G6H7"
+  }
+}

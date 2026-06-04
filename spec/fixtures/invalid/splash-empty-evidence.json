@@ -1,0 +1,10 @@
+{
+  "q": 1,
+  "v": "splash",
+  "id": "01JQA2X6Z9W8M4N0P3R7W1V5C2D3",
+  "src": "observer",
+  "ctx": "k8s/default/web",
+  "data": {
+    "evidence": []
+  }
+}

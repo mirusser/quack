@@ -11,8 +11,8 @@ Quack defines 11 verbs. Each verb carries a semantic role, a duck-natural metaph
 | `egg` | 🥚 | produced artifact / plan | A duck lays an egg — concrete, inspectable, durable. Potential for action, not yet action. | An artifact or plan. Must carry `hash`. Requires prior `splash`. |
 | `hatch` | 🐣 | approval / activation requested | An egg must be hatched before it becomes a duckling. The gate between potential and motion. | Authorization requested. References a prior `egg`. Expects `bob`, `nack`, or `molt`. |
 | `flap` | 🪽 | execution started | A duck flaps its wings to take off — the moment of commitment, the transition from still to airborne. | Execution begun. The approved plan is now in motion. Irreversible boundary. |
-| `perch` | 🪶 | completed | A duck perches: flight over, wings folded, a stable resting state. Still, but present. | Terminal. Task complete. Nothing follows for this correlation. |
-| `honk` | 📢 | warning / policy violation | Loud, sharp, unmistakable. Something is wrong. (Cross-bird extensibility: this is goose energy.) | Warning raised. Must include `reason` in `data`. Does not terminate. |
+| `perch` | 🕊️ | completed | A duck perches: flight over, wings folded, a stable resting state. Still, but present. | Terminal. Task complete. Nothing follows for this correlation. |
+| `honk` | 🪿 | warning / policy violation | Loud, sharp, unmistakable. Something is wrong. (Cross-bird extensibility: this is goose energy.) | Warning raised. Must include `reason` in `data`. Does not terminate. |
 | `molt` | 🪹 | canceled / superseded | Old feathers shed, new ones grow. The old form is gone. Irreversible. | Canceled or superseded. Terminal for the referenced correlation (`corr`). |
 | `splash` | 💦 | attach evidence | A duck splashes down, leaving visible ripples — proof of arrival, a mark anyone can see. | Evidence attached. Must include `evidence` in `data`. Required before `egg`. |
 
@@ -21,6 +21,8 @@ Quack defines 11 verbs. Each verb carries a semantic role, a duck-natural metaph
 Frames are point-to-point via `dst`. When `dst` is omitted, the frame is **pond-wide** — every agent in the context receives it.
 
 Only announce-type verbs may broadcast: `quack`, `honk`, `splash`, `molt`. All other verbs require `dst`.
+
+**Relay pattern.** Human-in-the-loop approval is out of band. When a human approves a `hatch` through a browser, the gateway or approval service emits the `bob` (or `nack`) on their behalf. From Quack's perspective, the gateway *is* the approver.
 
 ## Protocol-level rules
 
@@ -34,5 +36,9 @@ These rules are enforced by Quack-core. Violating frames are rejected: sender ge
 6. **MOLT must reference** — `molt` must include `corr`.
 7. **SPLASH must carry evidence** — `splash` must include `data.evidence` with ≥1 entry.
 8. **Broadcast verbs only** — only `quack`, `honk`, `splash`, `molt` may omit `dst`.
+
+## Freshness
+
+A frame may carry `ttl` — a relative freshness window in milliseconds from `ts`. Quack-core does not reject stale frames; freshness checking is receiver-side. A frame without `ttl` has no freshness constraint.
 
 > No mutation without a FLAP. No FLAP without a HATCH. No HATCH without an EGG. No EGG without SPLASH.

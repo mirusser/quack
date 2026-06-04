@@ -1,0 +1,10 @@
+{
+  "q": 1,
+  "v": "nack",
+  "id": "01JQA4A8C2Z1Q5R6T9Y3X7E4F5",
+  "src": "planner",
+  "dst": "observer",
+  "ctx": "k8s/default/web",
+  "corr": "incident-789",
+  "say": "cannot plan remediation — insufficient scope"
+}

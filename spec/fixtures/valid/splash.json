@@ -1,0 +1,19 @@
+{
+  "q": 1,
+  "v": "splash",
+  "id": "01JQA5B9D3A2R6S7U0Z4Y8F5G6",
+  "src": "observer",
+  "ctx": "k8s/default/web",
+  "corr": "plan-456",
+  "risk": "m",
+  "say": "evidence for plan-456",
+  "data": {
+    "evidence": [
+      {
+        "kind": "k8s.events",
+        "digest": "sha256:7e3a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0",
+        "uri": "artifact://events/default/web"
+      }
+    ]
+  }
+}

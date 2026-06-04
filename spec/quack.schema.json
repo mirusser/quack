@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://quack.dev/schemas/quack-v0.1.schema.json",
+  "title": "Quack v0.1 Core Frame",
+  "description": "Canonical JSON schema for the Quack protocol core frame model. All encodings (Text, CBOR, JSON, HTTP) must round-trip through this model.",
+  "type": "object",
+  "required": ["q", "v", "id", "src"],
+  "properties": {
+    "q": {
+      "type": "integer",
+      "const": 1,
+      "description": "Protocol version. v0.1 = 1."
+    },
+    "v": {
+      "type": "string",
+      "enum": [
+        "quack", "peck", "bob", "nack",
+        "egg", "hatch", "flap", "perch",
+        "honk", "molt", "splash"
+      ],
+      "description": "Quack verb."
+    },
+    "id": {
+      "type": "string",
+      "minLength": 26,
+      "maxLength": 26,
+      "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
+      "description": "ULID frame identifier."
+    },
+    "ts": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Unix milliseconds timestamp."
+    },
+    "src": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Source agent or component."
+    },
+    "dst": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Destination agent. Omitted = pond-wide broadcast."
+    },
+    "ctx": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Logical grouping scope."
+    },
+    "corr": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Correlation identifier linking frames into a sequence."
+    },
+    "risk": {
+      "type": "string",
+      "enum": ["n", "l", "m", "h", "c"],
+      "description": "Risk level: none, low, medium, high, critical."
+    },
+    "say": {
+      "type": "string",
+      "description": "Human-readable one-line summary."
+    },
+    "hash": {
+      "type": "string",
+      "description": "Digest binding, e.g. sha256:abc123..."
+    },
+    "ttl": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Relative freshness window in milliseconds from ts."
+    },
+    "tone": {
+      "type": "string",
+      "enum": [
+        "serious-duck",
+        "playful-duck",
+        "angry-goose",
+        "sleepy-duckling"
+      ],
+      "description": "Purely decorative tone. No semantic effect on protocol behavior."
+    },
+    "data": {
+      "type": "object",
+      "description": "Verb-structured payload."
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "v": { "const": "splash" } } },
+      "then": { "$ref": "#/$defs/splash" }
+    },
+    {
+      "if": { "properties": { "v": { "const": "egg" } } },
+      "then": { "$ref": "#/$defs/egg" }
+    },
+    {
+      "if": { "properties": { "v": { "const": "hatch" } } },
+      "then": { "$ref": "#/$defs/hatch" }
+    },
+    {
+      "if": { "properties": { "v": { "const": "flap" } } },
+      "then": { "$ref": "#/$defs/flap" }
+    },
+    {
+      "if": { "properties": { "v": { "const": "honk" } } },
+      "then": { "$ref": "#/$defs/honk" }
+    }
+  ],
+  "$defs": {
+    "evidenceRef": {
+      "type": "object",
+      "required": ["kind", "digest", "uri"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Evidence kind, e.g. k8s.events."
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$",
+          "description": "Digest over the evidence artifact."
+        },
+        "uri": {
+          "type": "string",
+          "minLength": 1,
+          "description": "URI for retrieving the evidence artifact."
+        }
+      },
+      "additionalProperties": true
+    },
+    "splash": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": ["evidence"],
+          "properties": {
+            "evidence": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "$ref": "#/$defs/evidenceRef" },
+              "description": "Evidence references. At least one entry required."
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "egg": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": ["eggId"],
+          "properties": {
+            "eggId": {
+              "type": "string",
+              "minLength": 1,
+              "description": "The artifact identifier."
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "hatch": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": ["eggId"],
+          "properties": {
+            "eggId": {
+              "type": "string",
+              "minLength": 1,
+              "description": "References the egg requiring approval."
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "flap": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": ["eggId"],
+          "properties": {
+            "eggId": {
+              "type": "string",
+              "minLength": 1,
+              "description": "References the approved plan being executed."
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "honk": {
+      "properties": {
+        "data": {
+          "type": "object",
+          "required": ["reason"],
+          "properties": {
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Why the warning was raised."
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

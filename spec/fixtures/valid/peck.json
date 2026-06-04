@@ -1,0 +1,11 @@
+{
+  "q": 1,
+  "v": "peck",
+  "id": "01JQA2Y6A0X9N3P4R7W1V5C2D3",
+  "src": "observer",
+  "dst": "planner",
+  "ctx": "k8s/default/web",
+  "corr": "incident-789",
+  "risk": "m",
+  "say": "please plan remediation"
+}

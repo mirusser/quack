@@ -32,7 +32,9 @@ A Quack Frame is the canonical abstract model. All encodings round-trip through 
 | Risk | `risk` | ❌ | `n` \| `l` \| `m` \| `h` \| `c` | none / low / medium / high / critical (§1.3) |
 | Summary | `say` | ❌ | string | Human-readable one-liner |
 | Digest | `hash` | ❌ | string | Digest binding (e.g., "sha256:abc...") |
+| Time to live | `ttl` | ❌ | int | Relative freshness window in ms from `ts` (§3.3) |
 | Payload | `data` | ❌ | map | Verb-structured payload (§4) |
+| Tone | `tone` | ❌ | string | Optional. Purely decorative. `serious-duck`, `playful-duck`, `angry-goose`, `sleepy-duckling`. Has no semantic effect on protocol behavior. |
 
 ### 1.2 Frame ID
 
@@ -62,6 +64,8 @@ Quack frames are point-to-point by default via `dst`. When `dst` is omitted, the
 
 Only announce-type verbs may omit `dst`: `quack`, `honk`, `splash`, `molt`. All other verbs require `dst`. A frame that violates this is rejected.
 
+**Relay pattern.** Human-in-the-loop approval is out of band by design. When a human approves a `hatch` through a browser or external tool, the gateway or approval service that observed that decision emits the `bob` (or `nack`) into Quack as the Quack-speaking agent. From Quack's perspective, the gateway *is* the approver. The human interaction happens outside the protocol — Quack sees only the outcome, not the deliberation.
+
 ---
 
 ## 2. Verbs
@@ -77,8 +81,8 @@ Quack defines 11 verbs. Each verb carries a semantic role, a duck-natural metaph
 | `egg` | 🥚 | produced artifact / plan | A duck lays an egg — concrete, inspectable, durable. Potential for action. | An artifact that can be examined and acted upon. Must carry `hash`. Requires prior `splash`. |
 | `hatch` | 🐣 | approval / activation requested | An egg must be hatched. The gate between potential and motion. | Authorization requested. References a prior `egg`. Expects `bob` or `nack` or `molt`. |
 | `flap` | 🪽 | execution started | A duck flaps its wings to take off. The moment of commitment. | Execution begun. The approved plan is now in motion. Irreversible boundary. |
-| `perch` | 🪶 | completed | A duck perches — flight over, wings folded, a stable resting state. | Terminal. Task complete. Nothing follows for this correlation. |
-| `honk` | 📢 | warning / policy violation | Loud, sharp, unmistakable. Something is wrong. | Warning raised. Must include `reason` in `data`. Does not terminate. |
+| `perch` | 🕊️ | completed | A duck perches — flight over, wings folded, a stable resting state. | Terminal. Task complete. Nothing follows for this correlation. |
+| `honk` | 🪿 | warning / policy violation | Loud, sharp, unmistakable. Something is wrong. | Warning raised. Must include `reason` in `data`. Does not terminate. |
 | `molt` | 🪹 | canceled / superseded | Old feathers shed, new ones grow. The old form is gone. | Canceled or superseded. Terminal for the referenced correlation. |
 | `splash` | 💦 | attach evidence | A duck splashes down, leaving visible ripples — proof of arrival. | Evidence attached. Must include `evidence` in `data`. Required before `egg`. |
 
@@ -102,9 +106,17 @@ These rules are enforced by Quack-core. A frame that violates them is rejected: 
 7. **SPLASH must carry evidence** — a `splash` must include `data.evidence` with at least one reference.
 8. **Broadcast verbs only** — only `quack`, `honk`, `splash`, and `molt` may omit `dst`. All other verbs require `dst`.
 
-### 3.3 Expiry
+### 3.3 Freshness
 
-Sequences do not expire. A `hatch` + `bob` from any point in the past is still valid for a `flap`. Freshness and staleness checks are the responsibility of downstream validators, not Quack-core. This may change in a future protocol version.
+A frame may carry a `ttl` (time to live) — a relative freshness window in milliseconds measured from the frame's `ts` field. If `ts` is omitted, `ttl` is measured from emission time.
+
+Quack-core does **not** reject stale frames at the protocol level. Freshness checking is receiver-side: each agent decides what to do with a frame whose `ttl` has elapsed. A common pattern is to drop stale frames, log them, or emit a `nack` — but the protocol does not mandate any of these.
+
+A frame without `ttl` has no freshness constraint. Sequences with no `ttl` on any frame do not expire. This is the default.
+
+```
+Freshness check:  (receiver_clock - frame.ts) > frame.ttl  →  stale
+```
 
 ### 3.4 Enforcement scope
 
@@ -125,8 +137,8 @@ The `data` field carries verb-structured payload. Each verb defines its minimum 
 | `egg` | 🥚 | `eggId` | The artifact identifier. Must be accompanied by `hash` on the frame. |
 | `hatch` | 🐣 | `eggId` | References the egg requiring approval. |
 | `flap` | 🪽 | `eggId` | References the approved plan being executed. |
-| `perch` | 🪶 | none | Completion is self-contained. |
-| `honk` | 📢 | `reason` | Why the warning was raised. |
+| `perch` | 🕊️ | none | Completion is self-contained. |
+| `honk` | 🪿 | `reason` | Why the warning was raised. |
 | `molt` | 🪹 | none | `reason` is optional; `corr` on the frame is the mandatory reference. |
 | `splash` | 💦 | `evidence` | Array of evidence references. At least one entry required. |
 
@@ -151,6 +163,7 @@ Each entry in `splash.data.evidence`:
 | Encoding | Requirement | Purpose |
 |---|---|---|
 | Quack-Text | **MUST** | Human interface, injection, logs, headers, CLI, audit trails |
+| Quack-HTTP | **SHOULD** | HTTP header injection via Structured Fields (RFC 9651) |
 | Quack-CBOR | **MAY** | Compact binary transport for machines |
 | Quack-JSON | **MAY** | A2A interoperability, web tooling |
 
@@ -202,6 +215,8 @@ unreserved = ALPHA / DIGIT / "-" / "." / "_" / ":" / "/" / "@" / "+"
 | `risk` | `risk` (values: `none`, `low`, `medium`, `high`, `critical`) |
 | `say` | `summary` |
 | `hash` | `digest` |
+| `ttl` | `ttl` (value in ms) |
+| `tone` | `tone` (values: `serious-duck`, `playful-duck`, `angry-goose`, `sleepy-duckling`) |
 | `data` | not encoded inline — reference by digest: `evidence=@sha256:...` |
 
 #### Examples
@@ -213,7 +228,7 @@ QK1 splash quackId=01JQA2X6Z9W8M source=observer context=k8s/default/web evidenc
 
 QK1 egg quackId=01JQA3Y7A0X9N source=planner destination=executor context=k8s/default/web correlation=plan-456 digest=sha256:abc123 eggId=01JQA3Y7A0X9N risk=medium summary="restart deployment plan"
 
-QK1 hatch quackId=01JQA4Z8B1Y0P source=executor destination=human correlation=plan-456 eggId=01JQA3Y7A0X9N risk=medium summary="approval required"
+QK1 hatch quackId=01JQA4Z8B1Y0P source=executor destination=human correlation=plan-456 eggId=01JQA3Y7A0X9N risk=medium ttl=300000 summary="approval required"
 
 QK1 bob quackId=01JQA5A9C2Z1Q source=human destination=executor correlation=plan-456 summary="approved"
 
@@ -256,6 +271,8 @@ Binary encoding using CBOR (RFC 8949). Integer keys for compactness.
 | 10 | `hash` |
 | 11 | `say` |
 | 12 | `data` |
+| 13 | `ttl` |
+| 14 | `tone` |
 
 Media type: `application/vnd.quack+cbor`
 
@@ -273,6 +290,8 @@ JSON encoding for A2A interoperability. Lowercase field names match the canonica
   "ctx": "k8s/default/web",
   "corr": "plan-456",
   "risk": "m",
+  "ttl": 3600000,
+  "tone": "serious-duck",
   "hash": "sha256:abc123",
   "say": "restart deployment plan",
   "data": {
@@ -282,6 +301,29 @@ JSON encoding for A2A interoperability. Lowercase field names match the canonica
 ```
 
 Media type: `application/vnd.quack+json`
+
+### 5.5 Quack-HTTP (Structured Fields)
+
+For HTTP header injection, Quack frames may be encoded as HTTP Structured Fields (RFC 9651). This is the recommended encoding for `Quack` and `Quack-Trace` headers.
+
+```http
+Quack: q=1, v="egg", id="01JQA3Y7A0X9N", src="planner", dst="executor", ctx="k8s/default/web", corr="plan-456", risk="m", say="restart deployment plan"
+Quack-Trace: ctx="k8s/default/web", corr="plan-456"
+```
+
+Structured Fields values use RFC 9651 Dictionary syntax. String values are quoted; integers and tokens are bare. Unknown keys must be preserved. This encoding carries the same fields as Quack-JSON but uses comma-separated key=value pairs instead of JSON object syntax.
+
+Quack-HTTP is optional. Quack-Text (inline `QK1 ...` string in a single header value) and Quack-JSON (base64-encoded header value) are also valid HTTP header encodings. Implementations SHOULD prefer Quack-HTTP for new integrations.
+
+### 5.6 Freshness projection
+
+Core Quack uses `ttl` (relative milliseconds from `ts`) for freshness. Profile specifications such as `quack-mutation-v0` project this into an absolute `expiresAt` (ISO 8601 UTC) field when they target A2A container semantics. The projection rule is:
+
+```
+expiresAt = (frame.ts || now) + frame.ttl
+```
+
+A profile that carries `expiresAt` in its frame model MUST round-trip it through the core `ttl` field. Receivers MUST treat `expiresAt` in the past the same way they treat an elapsed `ttl` — receiver-side staleness, not a protocol-level rejection.
 
 ---
 
@@ -294,21 +336,38 @@ When Quack-core rejects a frame (violation of §3), two things happen:
 2. **A `nack` frame is emitted to the trace stream.** The pond sees the rejection for observability and debugging.
 
 ```
-QK1 nack quackId=01J... source=quack-core destination=planner correlation=plan-456 summary="FLAP requires prior HATCH+BOB"
+QK1 hatch quackId=01JQA4Z8B1Y0P source=executor destination=human correlation=plan-456 eggId=01JQA3Y7A0X9N risk=medium summary="approval required" ttl=300000
 ```
 
 ---
 
 ## 7. A2A Integration
 
-Quack rides inside A2A as an extension. Two insertion points depending on frame weight:
+Quack rides inside A2A as an extension. A2A owns agent discovery, protocol
+bindings, task lifecycle, message/artifact containers, and extension activation;
+Quack contributes a lightweight semantic frame that can be carried by those
+containers.
+
+This section targets A2A Protocol `1.0`. Patch releases such as `1.0.1` keep
+the same protocol compatibility value.
 
 ### 7.1 Agent Card declaration
+
+A Quack-aware agent declares support through
+`AgentCard.capabilities.extensions[]`. If the agent exposes multiple A2A
+interfaces, each interface advertises its A2A `protocolVersion`.
 
 ```json
 {
   "name": "Kubernetes MCP Guard Planner",
   "description": "Plans safe Kubernetes remediation actions.",
+  "supportedInterfaces": [
+    {
+      "url": "https://planner.example.com/a2a",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0"
+    }
+  ],
   "capabilities": {
     "extensions": [
       {
@@ -316,7 +375,13 @@ Quack rides inside A2A as an extension. Two insertion points depending on frame 
         "description": "Quack semantic protocol for agent coordination.",
         "required": false,
         "params": {
-          "maxRisk": "high"
+          "maxRisk": "high",
+          "maxTtl": 3600000,
+          "maxQuackVersion": 1,
+          "supportedEncodings": [
+            "application/vnd.quack+json",
+            "text/vnd.quack"
+          ]
         }
       }
     ]
@@ -324,13 +389,25 @@ Quack rides inside A2A as an extension. Two insertion points depending on frame 
 }
 ```
 
-`maxRisk` gates delivery at the protocol level (§1.3). Frames with `risk` exceeding this threshold are rejected before reaching the agent.
+`maxRisk` gates delivery at the protocol level (§1.3). Frames with `risk`
+exceeding this threshold are rejected before reaching the agent.
 
-`required` controls whether non-Quack agents can interact with this agent. `false` (default) means non-Quack callers are accepted without Quack enforcement. `true` means the agent rejects non-Quack callers at the A2A level.
+`maxTtl` is the maximum freshness window this agent accepts, in milliseconds.
+Frames with `ttl` exceeding this value are rejected before reaching the agent.
+Omitting `maxTtl` means the agent accepts any freshness window.
 
-### 7.2 Lightweight signals — metadata injection
+`maxQuackVersion` is the highest core Quack `q` value the agent accepts.
 
-Announce-type frames (`quack`, `honk`, `bob`, `nack`) are carried in A2A `Message.metadata`, keyed by the extension URI.
+`required` controls whether non-Quack agents can interact with this agent.
+`false` means non-Quack callers are accepted without Quack enforcement. `true`
+means the agent expects the caller to activate the extension, for example with
+the A2A `A2A-Extensions` header on HTTP bindings.
+
+### 7.2 Lightweight signals — metadata
+
+Small Quack-Text frames (`quack`, `honk`, `bob`, `nack`) may be carried in A2A
+`Message.metadata` under the extension URI. This is useful for logs, routing,
+trace hints, and low-friction agent coordination.
 
 ```json
 {
@@ -342,9 +419,11 @@ Announce-type frames (`quack`, `honk`, `bob`, `nack`) are carried in A2A `Messag
 }
 ```
 
-### 7.3 Payload frames — DataPart
+### 7.3 Payload frames — unified Part data
 
-Richer frames (`egg`, `splash`, `flap`, `hatch`) are carried as A2A `Part` with `mediaType: "application/vnd.quack+json"`.
+Structured frames (`egg`, `splash`, `flap`, `hatch`) are carried in an A2A 1.0
+unified `Part` with `data` and `mediaType`. The legacy A2A `kind` discriminator
+is not used.
 
 ```json
 {
@@ -381,10 +460,10 @@ Quack traces render as emoji-annotated Quack-Text lines. This is the human-facin
 🦆 QK1 quack  quackId=01JQA1 source=observer context=k8s/default/web risk=medium summary="deployment unavailable"
 💦 QK1 splash quackId=01JQA2 source=observer context=k8s/default/web evidence=@sha256:abc123
 🥚 QK1 egg    quackId=01JQA3 source=planner destination=executor context=k8s/default/web correlation=plan-456 digest=sha256:abc123 eggId=01JQA3 risk=medium summary="restart plan"
-🐣 QK1 hatch  quackId=01JQA4 source=executor destination=human correlation=plan-456 eggId=01JQA3 risk=medium summary="approval required"
+🐣 QK1 hatch  quackId=01JQA4 source=executor destination=human correlation=plan-456 eggId=01JQA3 risk=medium ttl=300000 summary="approval required"
 🦢 QK1 bob    quackId=01JQA5 source=human destination=executor correlation=plan-456 summary="approved"
 🪽 QK1 flap   quackId=01JQA6 source=executor destination=gateway correlation=plan-456 eggId=01JQA3 digest=sha256:abc123 summary="execute approved plan"
-🪶 QK1 perch  quackId=01JQA7 source=gateway destination=executor correlation=plan-456 summary="deployment restarted"
+🕊️ QK1 perch  quackId=01JQA7 source=gateway destination=executor correlation=plan-456 summary="deployment restarted"
 ```
 
 Verb emoji mapping:
@@ -398,8 +477,8 @@ Verb emoji mapping:
 | `egg` | 🥚 |
 | `hatch` | 🐣 |
 | `flap` | 🪽 |
-| `perch` | 🪶 |
-| `honk` | 📢 |
+| `perch` | 🕊️ |
+| `honk` | 🪿 |
 | `molt` | 🪹 |
 | `splash` | 💦 |
 

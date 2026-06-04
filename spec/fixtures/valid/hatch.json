@@ -1,0 +1,15 @@
+{
+  "q": 1,
+  "v": "hatch",
+  "id": "01JQA7D1F5C4T8U9W2B6A0H7I8",
+  "src": "executor",
+  "dst": "human",
+  "ctx": "k8s/default/web",
+  "corr": "plan-456",
+  "risk": "m",
+  "ttl": 300000,
+  "say": "approval required",
+  "data": {
+    "eggId": "01JQA6C0E4B3S7T8V1A5Z9G6H7"
+  }
+}

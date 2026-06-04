@@ -1,0 +1,9 @@
+{
+  "q": 1,
+  "v": "quack",
+  "id": "01JQA1X5Z8W7M3N9P2R6V0K4B1",
+  "src": "observer",
+  "ctx": "k8s/default/web",
+  "risk": "m",
+  "say": "deployment unavailable"
+}
