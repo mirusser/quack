@@ -63,3 +63,7 @@ InfraGate.sln.DotSettings.user
 
 # ── Agent runtime & skills ───────────────────────────────────────────────────
 .agents/
+.serena/
+
+# ── Brainstorming / notes ────────────────────────────────────────────────────
+loose-general-idea/
