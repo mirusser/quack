@@ -3,12 +3,9 @@ namespace Quack;
 /// <summary>
 /// Fans out trace writes to an ordered list of inner trace sinks.
 /// </summary>
-public sealed class CompositeTraceSink : ITraceSink
+public sealed class CompositeTraceSink(IEnumerable<ITraceSink> sinks) : ITraceSink
 {
-    private readonly IReadOnlyList<ITraceSink> _sinks;
-
-    /// <param name="sinks">Inner trace sinks.</param>
-    public CompositeTraceSink(IEnumerable<ITraceSink> sinks) => _sinks = sinks.ToList();
+    private readonly IReadOnlyList<ITraceSink> _sinks = sinks.ToList();
 
     /// <inheritdoc />
     public void Write(QuackFrame frame)

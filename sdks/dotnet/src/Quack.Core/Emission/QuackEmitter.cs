@@ -5,28 +5,16 @@ namespace Quack;
 /// Auto-sets Id, Timestamp, Source, and Version on outgoing frames,
 /// gates on Risk and TTL, then fans out through the sink pipeline.
 /// </summary>
-public sealed class QuackEmitter : IQuackEmitter
+public sealed class QuackEmitter(
+    IQuackSink sink,
+    IQuackValidator validator,
+    QuackOptions options,
+    ITraceSink? traceSink = null) : IQuackEmitter
 {
-    private readonly IQuackSink _sink;
-    private readonly IQuackValidator _validator;
-    private readonly ITraceSink? _traceSink;
-    private readonly QuackOptions _options;
-
-    /// <param name="sink">The delivery sink pipeline.</param>
-    /// <param name="validator">The frame validator.</param>
-    /// <param name="traceSink">Optional trace sink for rejection observability.</param>
-    /// <param name="options">Configuration options.</param>
-    public QuackEmitter(
-        IQuackSink sink,
-        IQuackValidator validator,
-        QuackOptions options,
-        ITraceSink? traceSink = null)
-    {
-        _sink = sink;
-        _validator = validator;
-        _options = options;
-        _traceSink = traceSink;
-    }
+    private readonly IQuackSink _sink = sink;
+    private readonly IQuackValidator _validator = validator;
+    private readonly ITraceSink? _traceSink = traceSink;
+    private readonly QuackOptions _options = options;
 
     /// <inheritdoc />
     public string AgentName => _options.AgentName;

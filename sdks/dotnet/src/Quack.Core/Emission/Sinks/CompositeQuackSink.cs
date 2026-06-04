@@ -15,20 +15,12 @@ public enum CompositeFailureMode
 /// Fans out delivery to an ordered list of inner sinks.
 /// Each inner sink receives the same validated frame.
 /// </summary>
-public sealed class CompositeQuackSink : IQuackSink
+public sealed class CompositeQuackSink(
+    IEnumerable<IQuackSink> sinks,
+    CompositeFailureMode failureMode = CompositeFailureMode.Continue) : IQuackSink
 {
-    private readonly IReadOnlyList<IQuackSink> _sinks;
-    private readonly CompositeFailureMode _failureMode;
-
-    /// <param name="sinks">Inner sinks in fan-out order.</param>
-    /// <param name="failureMode">How to handle inner sink failures.</param>
-    public CompositeQuackSink(
-        IEnumerable<IQuackSink> sinks,
-        CompositeFailureMode failureMode = CompositeFailureMode.Continue)
-    {
-        _sinks = sinks.ToList();
-        _failureMode = failureMode;
-    }
+    private readonly IReadOnlyList<IQuackSink> _sinks = sinks.ToList();
+    private readonly CompositeFailureMode _failureMode = failureMode;
 
     /// <summary>
     /// Convenience constructor for a fixed set of sinks.

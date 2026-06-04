@@ -12,7 +12,7 @@ public static class QuackAgentCardExtensions
     {
         return new Dictionary<string, object>
         {
-            ["uri"] = "https://quack.dev/ext/quack/v0.1",
+            ["uri"] = "https://example.org/ext/quack/v0.1",
             ["description"] = "Quack semantic protocol for agent coordination.",
             ["required"] = false,
             ["params"] = new Dictionary<string, object>
@@ -20,11 +20,11 @@ public static class QuackAgentCardExtensions
                 ["maxRisk"] = SerializeRisk(options.MaxRisk),
                 ["maxTtl"] = options.MaxTtl ?? 0,
                 ["maxQuackVersion"] = options.MaxQuackVersion,
-                ["supportedEncodings"] = new[]
-                {
+                ["supportedEncodings"] = (string[])
+                [
                     "application/vnd.quack+json",
                     "text/vnd.quack",
-                },
+                ],
             },
         };
     }

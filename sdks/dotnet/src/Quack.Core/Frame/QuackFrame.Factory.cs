@@ -4,6 +4,24 @@ namespace Quack;
 
 public sealed partial record QuackFrame
 {
+    /// <summary>
+    /// A digest-bound evidence reference used in splash frames.
+    /// </summary>
+    public sealed record EvidenceRef
+    {
+        /// <summary>Evidence kind (e.g. "k8s.events").</summary>
+        public string Kind { get; init; } = string.Empty;
+
+        /// <summary>Content digest (e.g. "sha256:abc...").</summary>
+        public string Digest { get; init; } = string.Empty;
+
+        /// <summary>Location URI (e.g. "artifact://events/default/web").</summary>
+        public string? Uri { get; init; }
+
+        /// <summary>Optional media type.</summary>
+        public string? MediaType { get; init; }
+    }
+
     private static QuackFrame Create(
         QuackVerb verb,
         string source,
@@ -75,7 +93,7 @@ public sealed partial record QuackFrame
         return doc.RootElement.Clone();
     }
 
-    private static JsonElement EvidenceToJson(EvidenceRef evidence)
+    private static JsonElement EvidenceToJson(QuackFrame.EvidenceRef evidence)
     {
         using var stream = new MemoryStream();
         using var writer = new Utf8JsonWriter(stream);
@@ -122,7 +140,7 @@ public sealed partial record QuackFrame
     /// <summary>💦 Attach evidence — minimum: source, evidence.</summary>
     public static QuackFrame Splash(
         string source,
-        EvidenceRef[] evidence,
+        QuackFrame.EvidenceRef[] evidence,
         string? destination = null,
         string? context = null,
         string? correlation = null,

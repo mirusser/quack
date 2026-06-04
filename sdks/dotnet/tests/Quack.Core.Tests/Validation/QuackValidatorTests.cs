@@ -16,6 +16,28 @@ public sealed class QuackValidatorTests
     }
 
     [TestMethod]
+    public void Validate_InvalidUlid_FailsInvalidFrame()
+    {
+        var frame = QuackFrame.Quack("observer") with { Id = "not-a-ulid" };
+
+        var result = _validator.Validate(frame);
+
+        Assert.IsFalse(result.IsValid);
+        Assert.IsTrue(result.Errors.Any(e => e.Rule == QuackRule.InvalidFrame));
+    }
+
+    [TestMethod]
+    public void Validate_MissingSource_FailsInvalidFrame()
+    {
+        var frame = QuackFrame.Quack("observer") with { Source = string.Empty };
+
+        var result = _validator.Validate(frame);
+
+        Assert.IsFalse(result.IsValid);
+        Assert.IsTrue(result.Errors.Any(e => e.Rule == QuackRule.InvalidFrame));
+    }
+
+    [TestMethod]
     public void Validate_HonkWithoutReason_FailsHonkWithoutReason()
     {
         var frame = new QuackFrame
@@ -69,6 +91,17 @@ public sealed class QuackValidatorTests
             Id = QuackId.NewId(),
             Source = "observer",
         };
+
+        var result = _validator.Validate(frame);
+
+        Assert.IsFalse(result.IsValid);
+        Assert.IsTrue(result.Errors.Any(e => e.Rule == QuackRule.SplashWithoutEvidence));
+    }
+
+    [TestMethod]
+    public void Validate_SplashWithEmptyEvidence_FailsSplashWithoutEvidence()
+    {
+        var frame = QuackFrame.Splash("observer", Array.Empty<QuackFrame.EvidenceRef>());
 
         var result = _validator.Validate(frame);
 
@@ -165,6 +198,20 @@ public sealed class QuackValidatorTests
     }
 
     [TestMethod]
+    public void Validate_FlapWithHatchButWithoutBob_FailsFlapWithoutHatch()
+    {
+        var history = new InMemoryQuackHistory();
+        history.Add(QuackFrame.Egg("planner", "executor", "plan-1", "sha256:abc", correlation: "corr-1"));
+        history.Add(QuackFrame.Hatch("reviewer", "gateway", "plan-1", "corr-1"));
+        var frame = QuackFrame.Flap("executor", "gateway", "plan-1", "sha256:abc", "corr-1");
+
+        var result = _validator.Validate(frame, history);
+
+        Assert.IsFalse(result.IsValid);
+        Assert.IsTrue(result.Errors.Any(e => e.Rule == QuackRule.FlapWithoutHatch));
+    }
+
+    [TestMethod]
     public void Validate_EggWithoutSplash_Fails()
     {
         var frame = QuackFrame.Egg("planner", "executor", "plan-1", "sha256:abc", context: "ctx-1");
@@ -180,7 +227,7 @@ public sealed class QuackValidatorTests
     public void Validate_EggAfterSplash_Passes()
     {
         var splash = QuackFrame.Splash("observer", [
-            new EvidenceRef { Kind = "k8s.events", Digest = "sha256:abc" }
+            new QuackFrame.EvidenceRef { Kind = "k8s.events", Digest = "sha256:abc" }
         ], context: "ctx-1");
         var history = new InMemoryQuackHistory();
         history.Add(splash);

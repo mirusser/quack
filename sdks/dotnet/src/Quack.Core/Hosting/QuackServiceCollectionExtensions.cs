@@ -1,6 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-
 namespace Quack;
 
 /// <summary>
@@ -28,7 +25,9 @@ public static class QuackServiceCollectionExtensions
         // Register IQuackSink as composite of all registered sinks
         services.TryAddSingleton<IQuackSink>(sp =>
         {
-            var sinks = sp.GetServices<IQuackSink>().ToList();
+            var sinks = sp.GetServices<QuackSinkRegistration>()
+                .Select(registration => (IQuackSink)sp.GetRequiredService(registration.SinkType))
+                .ToList();
             return sinks.Count switch
             {
                 0 => new NoopQuackSink(),
@@ -40,7 +39,9 @@ public static class QuackServiceCollectionExtensions
         // Register ITraceSink as composite of all registered trace sinks
         services.TryAddSingleton<ITraceSink>(sp =>
         {
-            var sinks = sp.GetServices<ITraceSink>().ToList();
+            var sinks = sp.GetServices<QuackTraceSinkRegistration>()
+                .Select(registration => (ITraceSink)sp.GetRequiredService(registration.SinkType))
+                .ToList();
             return sinks.Count switch
             {
                 0 => new LoggerTraceSink(sp.GetRequiredService<ILoggerFactory>().CreateLogger("Quack.Trace")),

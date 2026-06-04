@@ -18,7 +18,7 @@ public readonly struct ValidationResult
     }
 
     /// <summary>Create a successful validation result.</summary>
-    public static ValidationResult Valid() => new(true, Array.Empty<QuackError>());
+    public static ValidationResult Valid() => new(true, []);
 
     /// <summary>Create a failed validation result with errors.</summary>
     public static ValidationResult Invalid(params QuackError[] errors) =>

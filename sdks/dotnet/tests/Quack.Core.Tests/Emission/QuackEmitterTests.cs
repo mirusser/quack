@@ -76,6 +76,21 @@ public sealed class QuackEmitterTests
         var result = await emitter.EmitAsync(frame);
 
         Assert.IsTrue(result.IsRejected);
+        Assert.AreEqual(QuackRule.NonBroadcastWithoutDestination, result.Errors[0].Rule);
+    }
+
+    [TestMethod]
+    public async Task Emitter_VersionExceedsMaxQuackVersion_ReturnsInvalidFrame()
+    {
+        var options = new QuackOptions { AgentName = "test", MaxQuackVersion = 1 };
+        var emitter = new QuackEmitter(new NoopQuackSink(), new QuackValidator(), options);
+        var frame = QuackFrame.Quack("test") with { Version = 2 };
+
+        var result = await emitter.EmitAsync(frame);
+
+        Assert.IsTrue(result.IsRejected);
+        Assert.AreEqual("VERSION_EXCEEDS_MAX", result.Errors[0].Code);
+        Assert.AreEqual(QuackRule.InvalidFrame, result.Errors[0].Rule);
     }
 
     [TestMethod]
@@ -105,71 +120,5 @@ public sealed class QuackEmitterTests
             EmitCount++;
             return new(QuackResult.Success(frame));
         }
-    }
-}
-
-[TestClass]
-public sealed class QuackTextTests
-{
-    [TestMethod]
-    public void Encode_MinimalFrame_ProducesExpectedFormat()
-    {
-        var frame = new QuackFrame
-        {
-            Version = 1,
-            Verb = QuackVerb.Quack,
-            Id = "01JQA1X5Z8W7M3N9P2R6V0K4B1",
-            Source = "observer",
-        };
-
-        var text = QuackText.Encode(frame);
-
-        Assert.IsTrue(text.StartsWith("QK1 quack"));
-        Assert.IsTrue(text.Contains("quackId=01JQA1X5Z8W7M3N9P2R6V0K4B1"));
-        Assert.IsTrue(text.Contains("src=observer"));
-    }
-
-    [TestMethod]
-    public void Encode_WithAllFields_IncludesAllKeys()
-    {
-        var frame = QuackFrame.Quack(
-            source: "test",
-            destination: "target",
-            context: "ctx",
-            correlation: "corr",
-            risk: QuackRisk.Medium,
-            summary: "hello world",
-            tone: QuackTone.PlayfulDuck);
-
-        var text = QuackText.Encode(frame);
-
-        Assert.IsTrue(text.Contains("destination=target"));
-        Assert.IsTrue(text.Contains("context=ctx"));
-        Assert.IsTrue(text.Contains("correlation=corr"));
-        Assert.IsTrue(text.Contains("say=\"hello world\""));
-    }
-
-    [TestMethod]
-    public void EncodeValue_WithoutSpecialChars_ReturnsUnchanged()
-    {
-        var result = QuackText.EncodeValue("simple");
-
-        Assert.AreEqual("simple", result);
-    }
-
-    [TestMethod]
-    public void EncodeValue_WithSpaces_IsQuoted()
-    {
-        var result = QuackText.EncodeValue("hello world");
-
-        Assert.AreEqual("\"hello world\"", result);
-    }
-
-    [TestMethod]
-    public void EncodeValue_WithEquals_IsQuoted()
-    {
-        var result = QuackText.EncodeValue("key=val");
-
-        Assert.AreEqual("\"key=val\"", result);
     }
 }

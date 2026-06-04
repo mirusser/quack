@@ -1,5 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Quack;
 
 /// <summary>
@@ -17,29 +15,25 @@ public interface IQuackBuilder
     IQuackBuilder AddTraceSink<T>() where T : class, ITraceSink;
 }
 
-internal sealed class QuackBuilder : IQuackBuilder
+internal sealed class QuackBuilder(IServiceCollection services) : IQuackBuilder
 {
-    private readonly List<Type> _sinkTypes = new();
-    private readonly List<Type> _traceSinkTypes = new();
-
-    public QuackBuilder(IServiceCollection services)
-    {
-        Services = services;
-    }
-
-    public IServiceCollection Services { get; }
+    public IServiceCollection Services { get; } = services;
 
     public IQuackBuilder AddSink<T>() where T : class, IQuackSink
     {
-        _sinkTypes.Add(typeof(T));
-        Services.TryAddEnumerable(ServiceDescriptor.Singleton<IQuackSink, T>());
+        Services.TryAddSingleton<T>();
+        Services.AddSingleton(new QuackSinkRegistration(typeof(T)));
         return this;
     }
 
     public IQuackBuilder AddTraceSink<T>() where T : class, ITraceSink
     {
-        _traceSinkTypes.Add(typeof(T));
-        Services.TryAddEnumerable(ServiceDescriptor.Singleton<ITraceSink, T>());
+        Services.TryAddSingleton<T>();
+        Services.AddSingleton(new QuackTraceSinkRegistration(typeof(T)));
         return this;
     }
 }
+
+internal sealed record QuackSinkRegistration(Type SinkType);
+
+internal sealed record QuackTraceSinkRegistration(Type SinkType);

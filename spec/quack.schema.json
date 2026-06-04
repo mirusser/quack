@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://quack.dev/schemas/quack-v0.1.schema.json",
+  "$id": "https://example.org/schemas/quack-v0.1.schema.json",
   "title": "Quack v0.1 Core Frame",
   "description": "Canonical JSON schema for the Quack protocol core frame model. All encodings (Text, CBOR, JSON, HTTP) must round-trip through this model.",
   "type": "object",

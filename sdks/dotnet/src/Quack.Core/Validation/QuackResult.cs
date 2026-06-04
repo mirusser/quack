@@ -27,7 +27,7 @@ public readonly struct QuackResult
 
     /// <summary>Create a success result carrying the emitted frame.</summary>
     public static QuackResult Success(QuackFrame frame) =>
-        new(true, frame, Array.Empty<QuackError>());
+        new(true, frame, []);
 
     /// <summary>Create a rejection result with structured errors.</summary>
     public static QuackResult Rejected(params QuackError[] errors) =>

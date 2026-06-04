@@ -53,7 +53,7 @@ public sealed class QuackFrameFactoryTests
     [TestMethod]
     public void SplashFactory_SetsEvidenceInData()
     {
-        var evidence = new EvidenceRef[]
+        var evidence = new QuackFrame.EvidenceRef[]
         {
             new() { Kind = "k8s.events", Digest = "sha256:abc", Uri = "artifact://events/default" },
         };
@@ -64,6 +64,27 @@ public sealed class QuackFrameFactoryTests
         Assert.IsNotNull(frame.Data);
         Assert.IsTrue(frame.Data!.Value.TryGetProperty("evidence", out var evidenceArray));
         Assert.AreEqual(JsonValueKind.Array, evidenceArray.ValueKind);
+    }
+
+    [TestMethod]
+    public void Splash_EmptyEvidence_CreatesEmptyEvidenceArray()
+    {
+        var frame = QuackFrame.Splash("observer", Array.Empty<QuackFrame.EvidenceRef>());
+
+        Assert.IsNotNull(frame.Data);
+        Assert.IsTrue(frame.Data!.Value.TryGetProperty("evidence", out var evidenceArray));
+        Assert.AreEqual(JsonValueKind.Array, evidenceArray.ValueKind);
+        Assert.AreEqual(0, evidenceArray.GetArrayLength());
+    }
+
+    [TestMethod]
+    public void Honk_EmptyReason_StoresReasonProperty()
+    {
+        var frame = QuackFrame.Honk("gateway", string.Empty);
+
+        Assert.IsNotNull(frame.Data);
+        Assert.IsTrue(frame.Data!.Value.TryGetProperty("reason", out var reason));
+        Assert.AreEqual(string.Empty, reason.GetString());
     }
 
     [TestMethod]

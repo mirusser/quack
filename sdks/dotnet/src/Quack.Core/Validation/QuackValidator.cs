@@ -1,14 +1,16 @@
 namespace Quack;
 
 /// <summary>
-/// Default validator implementation. Enforces all protocol rules from §3 of the spec.
+/// Default validator implementation. Use <see cref="Validate(QuackFrame)" /> for structural-only
+/// frame checks and <see cref="Validate(QuackFrame, IQuackHistory)" /> for full protocol validation
+/// that includes sequencing rules from history.
 /// </summary>
 public sealed class QuackValidator : IQuackValidator
 {
-    private static readonly HashSet<QuackVerb> BroadcastVerbs = new()
-    {
+    private static readonly HashSet<QuackVerb> BroadcastVerbs =
+    [
         QuackVerb.Quack, QuackVerb.Honk, QuackVerb.Splash, QuackVerb.Molt,
-    };
+    ];
 
     /// <inheritdoc />
     public ValidationResult Validate(QuackFrame frame)

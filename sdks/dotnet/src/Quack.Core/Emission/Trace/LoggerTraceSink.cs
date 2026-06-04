@@ -5,12 +5,9 @@ namespace Quack;
 /// <summary>
 /// Writes trace frames to an <see cref="ILogger"/> as emoji-prefixed Quack-Text lines.
 /// </summary>
-public sealed class LoggerTraceSink : ITraceSink
+public sealed class LoggerTraceSink(ILogger logger) : ITraceSink
 {
-    private readonly ILogger _logger;
-
-    /// <param name="logger">The logger to write to.</param>
-    public LoggerTraceSink(ILogger logger) => _logger = logger;
+    private readonly ILogger _logger = logger;
 
     /// <inheritdoc />
     public void Write(QuackFrame frame)
@@ -55,12 +52,9 @@ public sealed class LoggerTraceSink : ITraceSink
 /// <summary>
 /// Typed variant of <see cref="LoggerTraceSink"/> using <see cref="ILogger{T}"/>.
 /// </summary>
-public sealed class LoggerTraceSink<T> : ITraceSink
+public sealed class LoggerTraceSink<T>(ILogger<T> logger) : ITraceSink
 {
-    private readonly ILogger<T> _logger;
-
-    /// <param name="logger">The typed logger.</param>
-    public LoggerTraceSink(ILogger<T> logger) => _logger = logger;
+    private readonly ILogger<T> _logger = logger;
 
     /// <inheritdoc />
     public void Write(QuackFrame frame)

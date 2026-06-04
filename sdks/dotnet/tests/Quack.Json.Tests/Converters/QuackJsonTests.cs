@@ -115,7 +115,7 @@ public sealed class QuackJsonTests
             {
                 QuackVerb.Quack => QuackFrame.Quack("test"),
                 QuackVerb.Honk => QuackFrame.Honk("test", "reason"),
-                QuackVerb.Splash => QuackFrame.Splash("test", [new EvidenceRef { Kind = "log", Digest = "sha256:abc" }]),
+                QuackVerb.Splash => QuackFrame.Splash("test", [new QuackFrame.EvidenceRef { Kind = "log", Digest = "sha256:abc" }]),
                 QuackVerb.Molt => QuackFrame.Molt("test", "corr-1"),
                 QuackVerb.Peck => QuackFrame.Peck("test", "dst"),
                 QuackVerb.Egg => QuackFrame.Egg("test", "dst", "egg-1", "sha256:abc"),

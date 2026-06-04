@@ -16,11 +16,9 @@ public static class QuackMiddlewareExtensions
     }
 }
 
-internal sealed class QuackMiddleware
+internal sealed class QuackMiddleware(RequestDelegate next)
 {
-    private readonly RequestDelegate _next;
-
-    public QuackMiddleware(RequestDelegate next) => _next = next;
+    private readonly RequestDelegate _next = next;
 
     public async Task InvokeAsync(HttpContext context)
     {

@@ -55,7 +55,7 @@ A2A 1.0 `AgentExtension` object.
     "streaming": true,
     "extensions": [
       {
-        "uri": "https://quack.dev/extensions/quack-mutation/v0",
+        "uri": "https://example.org/extensions/quack-mutation/v0",
         "description": "Supports digest-bound mutation frames in A2A messages and artifacts.",
         "required": true,
         "params": {
@@ -106,7 +106,7 @@ POST /message:send HTTP/1.1
 Host: executor.example.com
 Content-Type: application/a2a+json
 A2A-Version: 1.0
-A2A-Extensions: https://quack.dev/extensions/quack-mutation/v0
+A2A-Extensions: https://example.org/extensions/quack-mutation/v0
 Authorization: Bearer token
 ```
 
@@ -131,7 +131,7 @@ Message example:
     "role": "ROLE_USER",
     "context": "anomaly-default-web",
     "taskId": "task-123",
-    "extensions": ["https://quack.dev/extensions/quack-mutation/v0"],
+    "extensions": ["https://example.org/extensions/quack-mutation/v0"],
     "parts": [
       {
         "mediaType": "application/vnd.quack+json",
@@ -166,7 +166,7 @@ Artifact example:
 {
   "artifactId": "artifact-plan-123",
   "name": "Approved execution outcome",
-  "extensions": ["https://quack.dev/extensions/quack-mutation/v0"],
+  "extensions": ["https://example.org/extensions/quack-mutation/v0"],
   "parts": [
     {
       "mediaType": "application/vnd.quack+json",
@@ -367,7 +367,7 @@ schema files, but conformance tests MUST validate the same constraints.
 ```json
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://quack.dev/schemas/quack-mutation-v0.schema.json",
+  "$id": "https://example.org/schemas/quack-mutation-v0.schema.json",
   "title": "Quack Mutation v0 Frame",
   "type": "object",
   "required": [
@@ -693,7 +693,7 @@ a detail object with:
 {
   "@type": "type.googleapis.com/google.rpc.ErrorInfo",
   "reason": "QUACK_STATE_VIOLATION",
-  "domain": "quack.dev",
+  "domain": "example.org",
   "metadata": {
     "verb": "flap",
     "planId": "plan-123",

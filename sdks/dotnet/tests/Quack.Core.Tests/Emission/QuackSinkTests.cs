@@ -44,6 +44,35 @@ public sealed class QuackSinkTests
     }
 
     [TestMethod]
+    public async Task CompositeQuackSink_ContinueMode_WhenFirstSinkFails_CallsRemainingSinksAndReturnsFirstError()
+    {
+        var failing = new FailingSink();
+        var counting = new CountingSink();
+        var composite = new CompositeQuackSink(
+            new IQuackSink[] { failing, counting },
+            CompositeFailureMode.Continue);
+        var frame = QuackFrame.Quack("test");
+
+        var result = await composite.EmitAsync(frame);
+
+        Assert.AreEqual(1, counting.EmitCount);
+        Assert.IsTrue(result.IsRejected);
+        Assert.AreEqual("TEST_ERROR", result.Errors[0].Code);
+    }
+
+    [TestMethod]
+    public async Task CompositeQuackSink_WithNoSinks_ReturnsSuccess()
+    {
+        var composite = new CompositeQuackSink(Array.Empty<IQuackSink>());
+        var frame = QuackFrame.Quack("test");
+
+        var result = await composite.EmitAsync(frame);
+
+        Assert.IsTrue(result.IsSuccess);
+        Assert.AreEqual(frame, result.Frame);
+    }
+
+    [TestMethod]
     public async Task CompositeQuackSink_StopOnError_StopsImmediately()
     {
         var failing = new FailingSink();
