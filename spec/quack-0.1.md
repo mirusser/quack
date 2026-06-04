@@ -19,26 +19,26 @@ A Quack Frame is the canonical abstract model. All encodings round-trip through 
 
 ### 1.1 Canonical fields
 
-| Field | Wire name | Required | Type | Purpose |
+| Field | Name | Required | Type | Purpose |
 |---|---|---|---|---|
-| Protocol version | `q` | ✅ | int | `1` for v0.1 |
-| Verb | `v` | ✅ | string | One of the 11 verbs (§2) |
+| Protocol version | `version` | ✅ | int | `1` for v0.1 |
+| Verb | `verb` | ✅ | string | One of the 11 verbs (§2) |
 | Frame ID | `id` | ✅ | string | ULID — unique quack identifier |
-| Timestamp | `ts` | ❌ | unix ms | When the frame was created |
-| Source | `src` | ✅ | string | Emitting agent or component |
-| Destination | `dst` | ❌ | string | Target agent. Omitted = pond-wide (§1.4) |
-| Context | `ctx` | ❌ | string | Logical grouping scope (e.g., "k8s/default/web") |
-| Correlation | `corr` | ❌ | string | Links frames into a sequence |
+| Timestamp | `timestamp` | ❌ | unix ms | When the frame was created |
+| Source | `source` | ✅ | string | Emitting agent or component |
+| Destination | `destination` | ❌ | string | Target agent. Omitted = pond-wide (§1.4) |
+| Context | `context` | ❌ | string | Logical grouping scope (e.g., "k8s/default/web") |
+| Correlation | `correlation` | ❌ | string | Links frames into a sequence |
 | Risk | `risk` | ❌ | `n` \| `l` \| `m` \| `h` \| `c` | none / low / medium / high / critical (§1.3) |
-| Summary | `say` | ❌ | string | Human-readable one-liner |
-| Digest | `hash` | ❌ | string | Digest binding (e.g., "sha256:abc...") |
-| Time to live | `ttl` | ❌ | int | Relative freshness window in ms from `ts` (§3.3) |
+| Summary | `summary` | ❌ | string | Human-readable one-liner |
+| Digest | `digest` | ❌ | string | Digest binding (e.g., "sha256:abc...") |
+| Time to live | `ttl` | ❌ | int | Relative freshness window in ms from `timestamp` (§3.3) |
 | Payload | `data` | ❌ | map | Verb-structured payload (§4) |
 | Tone | `tone` | ❌ | string | Optional. Purely decorative. `serious-duck`, `playful-duck`, `angry-goose`, `sleepy-duckling`. Has no semantic effect on protocol behavior. |
 
 ### 1.2 Frame ID
 
-Frame IDs are ULIDs — 26-character, sortable, URL-safe identifiers. They provide rough temporal ordering without requiring a `ts` field.
+Frame IDs are ULIDs — 26-character, sortable, URL-safe identifiers. They provide rough temporal ordering without requiring a `timestamp` field.
 
 ```
 01JQA1X5Z8W7M3N9P2R6V0K4B1
@@ -60,9 +60,9 @@ Risk is ordered: `n < l < m < h < c`. A `maxRisk: medium` agent accepts `n`, `l`
 
 ### 1.4 Addressing
 
-Quack frames are point-to-point by default via `dst`. When `dst` is omitted, the frame is **pond-wide** — every agent in the context receives it.
+Quack frames are point-to-point by default via `destination`. When `destination` is omitted, the frame is **pond-wide** — every agent in the context receives it.
 
-Only announce-type verbs may omit `dst`: `quack`, `honk`, `splash`, `molt`. All other verbs require `dst`. A frame that violates this is rejected.
+Only announce-type verbs may omit `destination`: `quack`, `honk`, `splash`, `molt`. All other verbs require `destination`. A frame that violates this is rejected.
 
 **Relay pattern.** Human-in-the-loop approval is out of band by design. When a human approves a `hatch` through a browser or external tool, the gateway or approval service that observed that decision emits the `bob` (or `nack`) into Quack as the Quack-speaking agent. From Quack's perspective, the gateway *is* the approver. The human interaction happens outside the protocol — Quack sees only the outcome, not the deliberation.
 
@@ -78,7 +78,7 @@ Quack defines 11 verbs. Each verb carries a semantic role, a duck-natural metaph
 | `peck` | 🐤 | request | A duck pecks to probe, demand attention, or draw a response. | Bounded request. Expects `bob` or `nack`. |
 | `bob` | 🦢 | accepted / understood | A swan bows its head — a graceful, unmistakable signal of recognition and trust. | "Received and understood." Also serves as approval after `hatch`. |
 | `nack` | 🐦‍⬛ | rejected / cannot comply | A blackbird turns away. Dark, decisive, final. No ambiguity. | Terminal rejection of a `peck` or `hatch`. |
-| `egg` | 🥚 | produced artifact / plan | A duck lays an egg — concrete, inspectable, durable. Potential for action. | An artifact that can be examined and acted upon. Must carry `hash`. Requires prior `splash`. |
+| `egg` | 🥚 | produced artifact / plan | A duck lays an egg — concrete, inspectable, durable. Potential for action. | An artifact that can be examined and acted upon. Must carry `digest`. Requires prior `splash`. |
 | `hatch` | 🐣 | approval / activation requested | An egg must be hatched. The gate between potential and motion. | Authorization requested. References a prior `egg`. Expects `bob` or `nack` or `molt`. |
 | `flap` | 🪽 | execution started | A duck flaps its wings to take off. The moment of commitment. | Execution begun. The approved plan is now in motion. Irreversible boundary. |
 | `perch` | 🕊️ | completed | A duck perches — flight over, wings folded, a stable resting state. | Terminal. Task complete. Nothing follows for this correlation. |
@@ -94,28 +94,28 @@ These rules are enforced by Quack-core. A frame that violates them is rejected: 
 
 ### 3.1 Sequencing rules
 
-1. **No FLAP without HATCH + BOB** — a `flap` requires a prior `hatch` and a prior `bob` (the approval) in the same `corr` context.
-2. **No HATCH without EGG** — a `hatch` must reference a prior `egg` via `corr`.
-3. **No EGG without SPLASH** — an `egg` requires a prior `splash` in the same `ctx` context.
-4. **No EGG without proof** — an `egg` must carry `hash` (digest binding over the artifact).
+1. **No FLAP without HATCH + BOB** — a `flap` requires a prior `hatch` and a prior `bob` (the approval) in the same `correlation` context.
+2. **No HATCH without EGG** — a `hatch` must reference a prior `egg` via `correlation`.
+3. **No EGG without SPLASH** — an `egg` requires a prior `splash` in the same `context` context.
+4. **No EGG without proof** — an `egg` must carry `digest` (digest binding over the artifact).
 
 ### 3.2 Content rules
 
 5. **HONK must explain** — a `honk` must include `data.reason`.
-6. **MOLT must reference** — a `molt` must include `corr` pointing to the quack or task it supersedes.
+6. **MOLT must reference** — a `molt` must include `correlation` pointing to the quack or task it supersedes.
 7. **SPLASH must carry evidence** — a `splash` must include `data.evidence` with at least one reference.
-8. **Broadcast verbs only** — only `quack`, `honk`, `splash`, and `molt` may omit `dst`. All other verbs require `dst`.
+8. **Broadcast verbs only** — only `quack`, `honk`, `splash`, and `molt` may omit `destination`. All other verbs require `destination`.
 
 ### 3.3 Freshness
 
-A frame may carry a `ttl` (time to live) — a relative freshness window in milliseconds measured from the frame's `ts` field. If `ts` is omitted, `ttl` is measured from emission time.
+A frame may carry a `ttl` (time to live) — a relative freshness window in milliseconds measured from the frame's `timestamp` field. If `timestamp` is omitted, `ttl` is measured from emission time.
 
 Quack-core does **not** reject stale frames at the protocol level. Freshness checking is receiver-side: each agent decides what to do with a frame whose `ttl` has elapsed. A common pattern is to drop stale frames, log them, or emit a `nack` — but the protocol does not mandate any of these.
 
 A frame without `ttl` has no freshness constraint. Sequences with no `ttl` on any frame do not expire. This is the default.
 
 ```
-Freshness check:  (receiver_clock - frame.ts) > frame.ttl  →  stale
+Freshness check:  (receiver_clock - frame.timestamp) > frame.ttl  →  stale
 ```
 
 ### 3.4 Enforcement scope
@@ -131,15 +131,15 @@ The `data` field carries verb-structured payload. Each verb defines its minimum 
 | Verb | Emoji | Required `data` fields | Notes |
 |---|---|---|---|
 | `quack` | 🦆 | none | Announcements may be bare. |
-| `peck` | 🐤 | none | The request is in `say`. |
+| `peck` | 🐤 | none | The request is in `summary`. |
 | `bob` | 🦢 | none | Acknowledgment is self-contained. |
 | `nack` | 🐦‍⬛ | none | Rejection is self-contained. |
-| `egg` | 🥚 | `eggId` | The artifact identifier. Must be accompanied by `hash` on the frame. |
+| `egg` | 🥚 | `eggId` | The artifact identifier. Must be accompanied by `digest` on the frame. |
 | `hatch` | 🐣 | `eggId` | References the egg requiring approval. |
 | `flap` | 🪽 | `eggId` | References the approved plan being executed. |
 | `perch` | 🕊️ | none | Completion is self-contained. |
 | `honk` | 🪿 | `reason` | Why the warning was raised. |
-| `molt` | 🪹 | none | `reason` is optional; `corr` on the frame is the mandatory reference. |
+| `molt` | 🪹 | none | `reason` is optional; `correlation` on the frame is the mandatory reference. |
 | `splash` | 💦 | `evidence` | Array of evidence references. At least one entry required. |
 
 ### 4.1 Evidence reference shape
@@ -204,17 +204,17 @@ unreserved = ALPHA / DIGIT / "-" / "." / "_" / ":" / "/" / "@" / "+"
 
 | Frame field | Text key |
 |---|---|
-| `v` | (the verb itself, first token after `QK1`) |
-| `q` | (implicit in `QK1` prefix) |
+| `verb` | (the verb itself, first token after `QK1`) |
+| `version` | (implicit in `QK1` prefix) |
 | `id` | `quackId` |
-| `ts` | `timestamp` |
-| `src` | `source` |
-| `dst` | `destination` |
-| `ctx` | `context` |
-| `corr` | `correlation` |
+| `timestamp` | `timestamp` |
+| `source` | `source` |
+| `destination` | `destination` |
+| `context` | `context` |
+| `correlation` | `correlation` |
 | `risk` | `risk` (values: `none`, `low`, `medium`, `high`, `critical`) |
-| `say` | `summary` |
-| `hash` | `digest` |
+| `summary` | `summary` |
+| `digest` | `digest` |
 | `ttl` | `ttl` (value in ms) |
 | `tone` | `tone` (values: `serious-duck`, `playful-duck`, `angry-goose`, `sleepy-duckling`) |
 | `data` | not encoded inline — reference by digest: `evidence=@sha256:...` |
@@ -258,18 +258,18 @@ Quack-Text does not carry binary payloads inline. Evidence and artifacts are ref
 Binary encoding using CBOR (RFC 8949). Integer keys for compactness.
 
 | CBOR key | Field |
-|---|---|
-| 1 | `q` |
-| 2 | `v` |
+|---|---|---|
+| 1 | `version` |
+| 2 | `verb` |
 | 3 | `id` |
-| 4 | `ts` |
-| 5 | `src` |
-| 6 | `dst` |
-| 7 | `ctx` |
-| 8 | `corr` |
+| 4 | `timestamp` |
+| 5 | `source` |
+| 6 | `destination` |
+| 7 | `context` |
+| 8 | `correlation` |
 | 9 | `risk` |
-| 10 | `hash` |
-| 11 | `say` |
+| 10 | `digest` |
+| 11 | `summary` |
 | 12 | `data` |
 | 13 | `ttl` |
 | 14 | `tone` |
@@ -282,18 +282,18 @@ JSON encoding for A2A interoperability. Lowercase field names match the canonica
 
 ```json
 {
-  "q": 1,
-  "v": "egg",
+  "version": 1,
+  "verb": "egg",
   "id": "01JQA3Y7A0X9N",
-  "src": "planner",
-  "dst": "executor",
-  "ctx": "k8s/default/web",
-  "corr": "plan-456",
+  "source": "planner",
+  "destination": "executor",
+  "context": "k8s/default/web",
+  "correlation": "plan-456",
   "risk": "m",
   "ttl": 3600000,
   "tone": "serious-duck",
-  "hash": "sha256:abc123",
-  "say": "restart deployment plan",
+  "digest": "sha256:abc123",
+  "summary": "restart deployment plan",
   "data": {
     "eggId": "01JQA3Y7A0X9N"
   }
@@ -307,8 +307,8 @@ Media type: `application/vnd.quack+json`
 For HTTP header injection, Quack frames may be encoded as HTTP Structured Fields (RFC 9651). This is the recommended encoding for `Quack` and `Quack-Trace` headers.
 
 ```http
-Quack: q=1, v="egg", id="01JQA3Y7A0X9N", src="planner", dst="executor", ctx="k8s/default/web", corr="plan-456", risk="m", say="restart deployment plan"
-Quack-Trace: ctx="k8s/default/web", corr="plan-456"
+Quack: version=1, verb="egg", id="01JQA3Y7A0X9N", source="planner", destination="executor", context="k8s/default/web", correlation="plan-456", risk="m", summary="restart deployment plan"
+Quack-Trace: context="k8s/default/web", correlation="plan-456"
 ```
 
 Structured Fields values use RFC 9651 Dictionary syntax. String values are quoted; integers and tokens are bare. Unknown keys must be preserved. This encoding carries the same fields as Quack-JSON but uses comma-separated key=value pairs instead of JSON object syntax.
@@ -317,10 +317,10 @@ Quack-HTTP is optional. Quack-Text (inline `QK1 ...` string in a single header v
 
 ### 5.6 Freshness projection
 
-Core Quack uses `ttl` (relative milliseconds from `ts`) for freshness. Profile specifications such as `quack-mutation-v0` project this into an absolute `expiresAt` (ISO 8601 UTC) field when they target A2A container semantics. The projection rule is:
+Core Quack uses `ttl` (relative milliseconds from `timestamp`) for freshness. Profile specifications such as `quack-mutation-v0` project this into an absolute `expiresAt` (ISO 8601 UTC) field when they target A2A container semantics. The projection rule is:
 
 ```
-expiresAt = (frame.ts || now) + frame.ttl
+expiresAt = (frame.timestamp || now) + frame.ttl
 ```
 
 A profile that carries `expiresAt` in its frame model MUST round-trip it through the core `ttl` field. Receivers MUST treat `expiresAt` in the past the same way they treat an elapsed `ttl` — receiver-side staleness, not a protocol-level rejection.
@@ -396,7 +396,7 @@ exceeding this threshold are rejected before reaching the agent.
 Frames with `ttl` exceeding this value are rejected before reaching the agent.
 Omitting `maxTtl` means the agent accepts any freshness window.
 
-`maxQuackVersion` is the highest core Quack `q` value the agent accepts.
+`maxQuackVersion` is the highest core Quack `version` value the agent accepts.
 
 `required` controls whether non-Quack agents can interact with this agent.
 `false` means non-Quack callers are accepted without Quack enforcement. `true`
@@ -432,16 +432,16 @@ is not used.
     { "text": "Proposed restart plan." },
     {
       "data": {
-        "q": 1,
-        "v": "egg",
+        "version": 1,
+        "verb": "egg",
         "id": "01JQA3Y7A0X9N",
-        "src": "planner",
-        "dst": "executor",
-        "ctx": "k8s/default/web",
-        "corr": "plan-456",
+        "source": "planner",
+        "destination": "executor",
+        "context": "k8s/default/web",
+        "correlation": "plan-456",
         "risk": "m",
-        "hash": "sha256:abc123",
-        "say": "restart deployment plan",
+        "digest": "sha256:abc123",
+        "summary": "restart deployment plan",
         "data": { "eggId": "01JQA3Y7A0X9N" }
       },
       "mediaType": "application/vnd.quack+json"
@@ -488,14 +488,14 @@ A machine-readable structured trace format (no emoji, aligned columns, explicit 
 
 ## 9. Versioning
 
-The protocol version is carried in `q`. v0.1 = `1`.
+The protocol version is carried in `version`. v0.1 = `1`.
 
-When a parser encounters a frame with a higher `q` value:
+When a parser encounters a frame with a higher `version` value:
 
 - If the frame is structurally parseable (known fields present and valid), accept it. Ignore unknown fields.
 - If the frame cannot be parsed (unknown verb, missing required field of a known type), reject it with `nack`.
 
-This means `q=2` frames are accepted by `q=1` parsers as long as the core frame structure is intact. Senders should use the Agent Card's declared `maxQuackVersion` to avoid emitting frames that a receiver cannot understand (negotiation is planned for a future version).
+This means `version=2` frames are accepted by `version=1` parsers as long as the core frame structure is intact. Senders should use the Agent Card's declared `maxQuackVersion` to avoid emitting frames that a receiver cannot understand (negotiation is planned for a future version).
 
 ---
 

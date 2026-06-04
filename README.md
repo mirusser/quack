@@ -11,7 +11,7 @@ If an agent cannot express the next step as a clear quack,
 maybe it should not do it.
 
 Agents can still use natural language, but every meaningful coordination
-step must have a tiny typed Quack envelope next to it.
+step must have a tiny typed **Quack** envelope next to it.
 
 > **Quack is:**
 >
@@ -71,3 +71,6 @@ Delivery rules: **risk gating**, **dst/addressing**, **ttl freshness**.
 | [`spec/quack-verbs.md`](spec/quack-verbs.md) | Quick-reference verb table |
 | [`spec/quack.schema.json`](spec/quack.schema.json) | JSON Schema for all 11 verbs |
 | [`spec/quack-mutation-v0.1.md`](spec/quack-mutation-v0.1.md) | A2A mutation profile — state machine, digest rules, conformance fixtures |
+| [`spec/quack-sdk-0.1.md`](spec/quack-sdk-0.1.md) | .NET SDK — frame model, sinks, validation, DI, error handling |
+| [`spec/quack-sdk-adapters-0.1.md`](spec/quack-sdk-adapters-0.1.md) | .NET SDK — codecs, A2A adapter, ASP.NET middleware, URIs, traces |
+| [`spec/quack-sdk-future-0.1.md`](spec/quack-sdk-future-0.1.md) | Future — CLI, profiles, OTel, MCP, signing, multi-language |

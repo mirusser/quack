@@ -1,10 +1,10 @@
 {
-  "q": 1,
-  "v": "honk",
+  "version": 1,
+  "verb": "honk",
   "id": "01JQAA0G4H8F7W1X2Z5E9D3K0L1",
-  "src": "gateway",
-  "ctx": "k8s/default/web",
+  "source": "gateway",
+  "context": "k8s/default/web",
   "risk": "h",
-  "say": "something is wrong",
+  "summary": "something is wrong",
   "data": {}
 }

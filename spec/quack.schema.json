@@ -4,14 +4,14 @@
   "title": "Quack v0.1 Core Frame",
   "description": "Canonical JSON schema for the Quack protocol core frame model. All encodings (Text, CBOR, JSON, HTTP) must round-trip through this model.",
   "type": "object",
-  "required": ["q", "v", "id", "src"],
+  "required": ["version", "verb", "id", "source"],
   "properties": {
-    "q": {
+    "version": {
       "type": "integer",
       "const": 1,
       "description": "Protocol version. v0.1 = 1."
     },
-    "v": {
+    "verb": {
       "type": "string",
       "enum": [
         "quack", "peck", "bob", "nack",
@@ -27,27 +27,27 @@
       "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$",
       "description": "ULID frame identifier."
     },
-    "ts": {
+    "timestamp": {
       "type": "integer",
       "minimum": 0,
       "description": "Unix milliseconds timestamp."
     },
-    "src": {
+    "source": {
       "type": "string",
       "minLength": 1,
       "description": "Source agent or component."
     },
-    "dst": {
+    "destination": {
       "type": "string",
       "minLength": 1,
       "description": "Destination agent. Omitted = pond-wide broadcast."
     },
-    "ctx": {
+    "context": {
       "type": "string",
       "minLength": 1,
       "description": "Logical grouping scope."
     },
-    "corr": {
+    "correlation": {
       "type": "string",
       "minLength": 1,
       "description": "Correlation identifier linking frames into a sequence."
@@ -57,18 +57,18 @@
       "enum": ["n", "l", "m", "h", "c"],
       "description": "Risk level: none, low, medium, high, critical."
     },
-    "say": {
+    "summary": {
       "type": "string",
       "description": "Human-readable one-line summary."
     },
-    "hash": {
+    "digest": {
       "type": "string",
       "description": "Digest binding, e.g. sha256:abc123..."
     },
     "ttl": {
       "type": "integer",
       "minimum": 0,
-      "description": "Relative freshness window in milliseconds from ts."
+      "description": "Relative freshness window in milliseconds from timestamp."
     },
     "tone": {
       "type": "string",
@@ -87,23 +87,23 @@
   },
   "allOf": [
     {
-      "if": { "properties": { "v": { "const": "splash" } } },
+      "if": { "properties": { "verb": { "const": "splash" } } },
       "then": { "$ref": "#/$defs/splash" }
     },
     {
-      "if": { "properties": { "v": { "const": "egg" } } },
+      "if": { "properties": { "verb": { "const": "egg" } } },
       "then": { "$ref": "#/$defs/egg" }
     },
     {
-      "if": { "properties": { "v": { "const": "hatch" } } },
+      "if": { "properties": { "verb": { "const": "hatch" } } },
       "then": { "$ref": "#/$defs/hatch" }
     },
     {
-      "if": { "properties": { "v": { "const": "flap" } } },
+      "if": { "properties": { "verb": { "const": "flap" } } },
       "then": { "$ref": "#/$defs/flap" }
     },
     {
-      "if": { "properties": { "v": { "const": "honk" } } },
+      "if": { "properties": { "verb": { "const": "honk" } } },
       "then": { "$ref": "#/$defs/honk" }
     }
   ],

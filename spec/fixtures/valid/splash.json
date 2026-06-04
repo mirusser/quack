@@ -1,12 +1,12 @@
 {
-  "q": 1,
-  "v": "splash",
+  "version": 1,
+  "verb": "splash",
   "id": "01JQA5B9D3A2R6S7U0Z4Y8F5G6",
-  "src": "observer",
-  "ctx": "k8s/default/web",
-  "corr": "plan-456",
+  "source": "observer",
+  "context": "k8s/default/web",
+  "correlation": "plan-456",
   "risk": "m",
-  "say": "evidence for plan-456",
+  "summary": "evidence for plan-456",
   "data": {
     "evidence": [
       {

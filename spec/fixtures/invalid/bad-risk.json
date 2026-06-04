@@ -1,7 +1,7 @@
 {
-  "q": 1,
-  "v": "quack",
+  "version": 1,
+  "verb": "quack",
   "id": "01JQA1X5Z8W7M3N9P2R6V0K4B1",
-  "src": "observer",
+  "source": "observer",
   "risk": "extreme"
 }

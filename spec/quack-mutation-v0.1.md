@@ -28,10 +28,9 @@ application/vnd.quack+json
 Quack-Text, if implemented, is only a trace/debug rendering. The canonical
 wire format for this profile is JSON carried in A2A unified `Part.data`.
 
-This profile is an A2A JSON projection of the core Quack frame model. Core
-Quack may use compact fields such as `q`, `v`, `id`, `src`, and `dst`; this
-profile projects those concepts into camelCase JSON so A2A schema validation,
-media-type negotiation, and extension requirements remain straightforward.
+This profile is an A2A JSON projection of the core Quack frame model. It uses
+the canonical Quack field names directly in camelCase JSON — `version`, `verb`,
+`id`, `source`, `destination`, etc.
 
 ## 1. A2A Binding
 
@@ -130,21 +129,21 @@ Message example:
   "message": {
     "messageId": "msg-001",
     "role": "ROLE_USER",
-    "contextId": "anomaly-default-web",
+    "context": "anomaly-default-web",
     "taskId": "task-123",
     "extensions": ["https://quack.dev/extensions/quack-mutation/v0"],
     "parts": [
       {
         "mediaType": "application/vnd.quack+json",
         "data": {
-          "quackVersion": "0.1",
+          "version": "0.1",
           "profile": "quack-mutation-v0",
           "verb": "flap",
-          "frameId": "frame-006",
-          "createdAt": "2026-06-04T12:00:00.000Z",
-          "sourceAgent": "executor",
-          "targetAgent": "gateway",
-          "contextId": "anomaly-default-web",
+          "id": "frame-006",
+          "timestamp": "2026-06-04T12:00:00.000Z",
+          "source": "executor",
+          "destination": "gateway",
+          "context": "anomaly-default-web",
           "taskId": "task-123",
           "risk": "high",
           "summary": "Execute approved restart plan.",
@@ -172,14 +171,14 @@ Artifact example:
     {
       "mediaType": "application/vnd.quack+json",
       "data": {
-        "quackVersion": "0.1",
+        "version": "0.1",
         "profile": "quack-mutation-v0",
         "verb": "perch",
-        "frameId": "frame-007",
-        "createdAt": "2026-06-04T12:00:12.000Z",
-        "sourceAgent": "gateway",
-        "targetAgent": "executor",
-        "contextId": "anomaly-default-web",
+        "id": "frame-007",
+        "timestamp": "2026-06-04T12:00:12.000Z",
+        "source": "gateway",
+        "destination": "executor",
+        "context": "anomaly-default-web",
         "taskId": "task-123",
         "risk": "high",
         "summary": "Deployment restarted.",
@@ -204,16 +203,16 @@ All Quack frames use camelCase JSON fields.
 
 | Field | Required | Type | Meaning |
 |---|---:|---|---|
-| `quackVersion` | Yes | string | Profile version. This document defines `0.1`. |
+| `version` | Yes | string | Profile version. This document defines `0.1`. |
 | `profile` | Yes | string | Must be `quack-mutation-v0`. |
 | `verb` | Yes | string | One of `splash`, `egg`, `hatch`, `flap`, `perch`, `honk`, `molt`. |
-| `frameId` | Yes | string | Opaque frame identifier. UUIDs are recommended. |
-| `createdAt` | Yes | string | ISO 8601 UTC timestamp with millisecond precision when available. |
-| `sourceAgent` | Yes | string | Quack-speaking sender. |
-| `targetAgent` | No | string | Intended receiver. Omit only for broadcast-style `splash`, `honk`, or `molt`. |
-| `contextId` | Yes | string | A2A context scope for the mutation conversation. |
+| `id` | Yes | string | Opaque frame identifier. UUIDs are recommended. |
+| `timestamp` | Yes | string | ISO 8601 UTC timestamp with millisecond precision when available. |
+| `source` | Yes | string | Quack-speaking sender. |
+| `destination` | No | string | Intended receiver. Omit only for broadcast-style `splash`, `honk`, or `molt`. |
+| `context` | Yes | string | A2A context scope for the mutation conversation. |
 | `taskId` | No | string | A2A task scope when the frame belongs to a specific task. |
-| `correlationId` | No | string | Optional application-level correlation. Not a proof. |
+| `correlation` | No | string | Optional application-level correlation. Not a proof. |
 | `risk` | Yes | string | `none`, `low`, `medium`, `high`, or `critical`. |
 | `expiresAt` | No | string | Optional ISO 8601 UTC freshness bound for this frame. |
 | `summary` | No | string | Human-readable one-line summary. |
@@ -221,13 +220,13 @@ All Quack frames use camelCase JSON fields.
 
 Container consistency rules:
 
-- If the containing A2A Message has `contextId`, the frame `contextId` MUST
+- If the containing A2A Message has `contextId`, the frame `context` MUST
   match it.
 - If the containing A2A Message has `taskId`, the frame `taskId` MUST match it.
-- If the frame is carried by an Artifact, the frame `contextId` and `taskId`
+- If the frame is carried by an Artifact, the frame `context` and `taskId`
   MUST match the surrounding Task or TaskArtifactUpdateEvent that delivers that
   Artifact.
-- If a frame carries both `contextId` and `taskId`, the receiver MUST enforce
+- If a frame carries both `context` and `taskId`, the receiver MUST enforce
   A2A's rule that the task belongs to that context.
 - Frame IDs, plan IDs, challenge IDs, grant IDs, and execution IDs are opaque
   handles. They are never accepted as integrity proof.
@@ -372,29 +371,29 @@ schema files, but conformance tests MUST validate the same constraints.
   "title": "Quack Mutation v0 Frame",
   "type": "object",
   "required": [
-    "quackVersion",
+    "version",
     "profile",
     "verb",
-    "frameId",
-    "createdAt",
-    "sourceAgent",
-    "contextId",
+    "id",
+    "timestamp",
+    "source",
+    "context",
     "risk",
     "data"
   ],
   "properties": {
-    "quackVersion": { "const": "0.1" },
+    "version": { "const": "0.1" },
     "profile": { "const": "quack-mutation-v0" },
     "verb": {
       "enum": ["splash", "egg", "hatch", "flap", "perch", "honk", "molt"]
     },
-    "frameId": { "type": "string", "minLength": 1 },
-    "createdAt": { "type": "string", "format": "date-time" },
-    "sourceAgent": { "type": "string", "minLength": 1 },
-    "targetAgent": { "type": "string", "minLength": 1 },
-    "contextId": { "type": "string", "minLength": 1 },
+    "id": { "type": "string", "minLength": 1 },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "source": { "type": "string", "minLength": 1 },
+    "destination": { "type": "string", "minLength": 1 },
+    "context": { "type": "string", "minLength": 1 },
     "taskId": { "type": "string", "minLength": 1 },
-    "correlationId": { "type": "string", "minLength": 1 },
+    "correlation": { "type": "string", "minLength": 1 },
     "risk": {
       "enum": ["none", "low", "medium", "high", "critical"]
     },
@@ -630,7 +629,7 @@ Rules:
 
 ## 6. State Machine
 
-The validator state machine is scoped to an A2A `contextId` and, when present,
+The validator state machine is scoped to an A2A `context` and, when present,
 an A2A `taskId`.
 
 ```text
@@ -645,7 +644,7 @@ payload.
 
 Rules:
 
-1. A `splash` records evidence for a `contextId` and optional `taskId`.
+1. A `splash` records evidence for a `context` and optional `taskId`.
 2. An `egg` MUST reference at least one evidence artifact previously introduced
    by a `splash` in the same state-machine scope.
 3. An `egg` creates or records exactly one `planId`.

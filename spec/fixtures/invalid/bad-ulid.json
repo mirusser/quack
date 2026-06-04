@@ -1,6 +1,6 @@
 {
-  "q": 1,
-  "v": "quack",
+  "version": 1,
+  "verb": "quack",
   "id": "not-a-valid-ulid-format",
-  "src": "observer"
+  "source": "observer"
 }
