@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Quack.AspNetCore</RootNamespace>
+    <AssemblyName>Quack.AspNetCore</AssemblyName>
+    <Description>ASP.NET Core middleware for Quack — header injection, IQuackFeature, HTTP helpers.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="..\Quack.Core\Quack.Core.csproj" />
+  </ItemGroup>
+</Project>

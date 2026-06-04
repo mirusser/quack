@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Quack.Cbor</RootNamespace>
+    <AssemblyName>Quack.Cbor</AssemblyName>
+    <Description>Quack-CBOR codec — deterministic CBOR encode/decode using System.Formats.Cbor.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Formats.Cbor" />
+    <ProjectReference Include="..\Quack.Core\Quack.Core.csproj" />
+  </ItemGroup>
+</Project>

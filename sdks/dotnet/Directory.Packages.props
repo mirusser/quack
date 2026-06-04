@@ -1,0 +1,13 @@
+<Project>
+  <ItemGroup>
+    <!-- Test packages -->
+    <PackageVersion Include="MSTest" Version="4.0.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <!-- Infrastructure -->
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="System.Formats.Cbor" Version="10.0.0" />
+    <!-- A2A SDK -->
+    <PackageVersion Include="Microsoft.Agents.AI.A2A" Version="1.8.0-preview.260528.1" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Quack.A2A</RootNamespace>
+    <AssemblyName>Quack.A2A</AssemblyName>
+    <Description>A2A adapter for Quack — Agent Card helpers, DataPart injection, A2AQuackSink.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Quack.Core\Quack.Core.csproj" />
+    <ProjectReference Include="..\Quack.Json\Quack.Json.csproj" />
+    <PackageReference Include="Microsoft.Agents.AI.A2A" />
+  </ItemGroup>
+</Project>

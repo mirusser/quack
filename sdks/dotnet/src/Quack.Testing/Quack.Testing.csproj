@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Quack.Testing</RootNamespace>
+    <AssemblyName>Quack.Testing</AssemblyName>
+    <Description>Quack test utilities — golden fixture runner, fake sinks, test helpers.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Quack.Core\Quack.Core.csproj" />
+    <ProjectReference Include="..\Quack.Json\Quack.Json.csproj" />
+  </ItemGroup>
+</Project>

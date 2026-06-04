@@ -1,0 +1,14 @@
+<Solution>
+  <Project Path="src/Quack.Core/Quack.Core.csproj" />
+  <Project Path="src/Quack.Json/Quack.Json.csproj" />
+  <Project Path="src/Quack.Cbor/Quack.Cbor.csproj" />
+  <Project Path="src/Quack.AspNetCore/Quack.AspNetCore.csproj" />
+  <Project Path="src/Quack.A2A/Quack.A2A.csproj" />
+  <Project Path="src/Quack.Testing/Quack.Testing.csproj" />
+  <Project Path="tests/Quack.Core.Tests/Quack.Core.Tests.csproj" />
+  <Project Path="tests/Quack.Json.Tests/Quack.Json.Tests.csproj" />
+  <Project Path="tests/Quack.Cbor.Tests/Quack.Cbor.Tests.csproj" />
+  <Project Path="tests/Quack.AspNetCore.Tests/Quack.AspNetCore.Tests.csproj" />
+  <Project Path="tests/Quack.A2A.Tests/Quack.A2A.Tests.csproj" />
+  <Project Path="tests/Quack.Testing.Tests/Quack.Testing.Tests.csproj" />
+</Solution>
