@@ -13,6 +13,8 @@ maybe it should not do it.
 Agents can still use natural language, but every meaningful coordination
 step must have a tiny typed **Quack** envelope next to it.
 
+The agent that owns a capability should be the authority on whether that capability is appropriate to use in a given situation.
+
 > **Quack is:**
 >
 > small &nbsp;·&nbsp; injectable &nbsp;·&nbsp; language-agnostic

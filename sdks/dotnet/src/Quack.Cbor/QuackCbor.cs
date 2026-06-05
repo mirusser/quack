@@ -1,5 +1,3 @@
-using System.Formats.Cbor;
-
 namespace Quack;
 
 /// <summary>
@@ -34,8 +32,26 @@ public static class QuackCbor
         ArgumentNullException.ThrowIfNull(frame);
 
         var writer = new CborWriter(CborConformanceMode.Lax);
-        writer.WriteStartMap(null);
 
+        // Pre-count fields for definite-length map (spec §5.3 requires deterministic CBOR)
+        int mapSize = 4; // version, verb, source, risk — always present
+        if (!string.IsNullOrEmpty(frame.Id)) mapSize++;
+        if (frame.Timestamp is not null) mapSize++;
+        if (frame.Destination is not null) mapSize++;
+        if (frame.Context is not null) mapSize++;
+        if (frame.Correlation is not null) mapSize++;
+        if (frame.Digest is not null) mapSize++;
+        if (frame.Summary is not null) mapSize++;
+        if (frame.Data is not null) mapSize++;
+        if (frame.Ttl.HasValue) mapSize++;
+        if (frame.Tone.HasValue) mapSize++;
+        if (frame.Profile is not null) mapSize++;
+        if (frame.ExpiresAt is not null) mapSize++;
+        if (frame.TaskId is not null) mapSize++;
+
+        writer.WriteStartMap(mapSize);
+
+        // Keys written in ascending integer order per spec §5.3
         writer.WriteInt32(KeyVersion);
         writer.WriteTextString(frame.Version);
 
@@ -90,6 +106,12 @@ public static class QuackCbor
             writer.WriteTextString(summary);
         }
 
+        if (frame.Data is { } data)
+        {
+            writer.WriteInt32(KeyData);
+            WriteJsonElement(writer, data);
+        }
+
         if (frame.Ttl.HasValue)
         {
             writer.WriteInt32(KeyTtl);
@@ -100,12 +122,6 @@ public static class QuackCbor
         {
             writer.WriteInt32(KeyTone);
             writer.WriteTextString(SerializeTone(frame.Tone.Value));
-        }
-
-        if (frame.Data is { } data)
-        {
-            writer.WriteInt32(KeyData);
-            WriteJsonElement(writer, data);
         }
 
         if (frame.Profile is { } profile)
@@ -138,10 +154,11 @@ public static class QuackCbor
         var reader = new CborReader(bytes, CborConformanceMode.Lax);
         var frame = new QuackFrame();
 
-        if (reader.ReadStartMap() is not { } mapSize)
-            throw new FormatException("Expected CBOR map");
+        var definiteSize = reader.ReadStartMap();
+        bool indefinite = definiteSize is null;
+        int remaining = definiteSize ?? 0;
 
-        for (int i = 0; i < mapSize; i++)
+        while (indefinite ? reader.PeekState() != CborReaderState.EndMap : remaining-- > 0)
         {
             var key = reader.ReadInt32();
             switch (key)
@@ -239,8 +256,9 @@ public static class QuackCbor
         switch (element.ValueKind)
         {
             case JsonValueKind.Object:
-                writer.WriteStartMap(null);
-                foreach (var prop in element.EnumerateObject())
+                var props = element.EnumerateObject().ToList();
+                writer.WriteStartMap(props.Count);
+                foreach (var prop in props)
                 {
                     writer.WriteTextString(prop.Name);
                     WriteJsonElement(writer, prop.Value);
@@ -248,7 +266,7 @@ public static class QuackCbor
                 writer.WriteEndMap();
                 break;
             case JsonValueKind.Array:
-                writer.WriteStartArray(null);
+                writer.WriteStartArray(element.GetArrayLength());
                 foreach (var item in element.EnumerateArray())
                     WriteJsonElement(writer, item);
                 writer.WriteEndArray();
@@ -290,7 +308,9 @@ public static class QuackCbor
                 {
                     var size = reader.ReadStartMap();
                     writer.WriteStartObject();
-                    for (int i = 0; i < size; i++)
+                    bool indef = size is null;
+                    int rem = size ?? 0;
+                    while (indef ? reader.PeekState() != CborReaderState.EndMap : rem-- > 0)
                     {
                         writer.WritePropertyName(reader.ReadTextString());
                         ReadCborToJson(reader, writer);
@@ -303,7 +323,9 @@ public static class QuackCbor
                 {
                     var size = reader.ReadStartArray();
                     writer.WriteStartArray();
-                    for (int i = 0; i < size; i++)
+                    bool indef = size is null;
+                    int rem = size ?? 0;
+                    while (indef ? reader.PeekState() != CborReaderState.EndArray : rem-- > 0)
                         ReadCborToJson(reader, writer);
                     reader.ReadEndArray();
                     writer.WriteEndArray();

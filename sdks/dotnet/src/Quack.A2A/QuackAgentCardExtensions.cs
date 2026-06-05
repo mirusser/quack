@@ -12,7 +12,7 @@ public static class QuackAgentCardExtensions
     {
         return new Dictionary<string, object>
         {
-            ["uri"] = "https://example.org/ext/quack/v0.1",
+            ["uri"] = "https://example.org/extensions/quack/v0.1",
             ["description"] = "Quack semantic protocol for agent coordination.",
             ["required"] = false,
             ["params"] = new Dictionary<string, object>

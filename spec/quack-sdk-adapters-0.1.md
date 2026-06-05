@@ -65,14 +65,12 @@ to JSON wire names using camelCase:
 | `Destination` | `destination` |
 | `Context` | `context` |
 | `Correlation` | `correlation` |
-| `Risk` | `risk` (string values: `n`, `l`, `m`, `h`, `c`) |
+| `Risk` | `risk` (values: `none`, `low`, `medium`, `high`, `critical`) |
 | `Summary` | `summary` |
 | `Digest` | `digest` |
 | `Ttl` | `ttl` |
 | `Tone` | `tone` |
 | `Data` | `data` |
-
-Risk values serialize as single-char strings and deserialize case-insensitively.
 
 ### 1.3 Quack-CBOR
 
@@ -109,7 +107,7 @@ public static class QuackCbor
 
 **Encoding rules:**
 - Deterministic CBOR (RFC 8949 §4.2) — keys sorted by integer value, definite-length only
-- `risk` encoded as text string (`"n"`, `"l"`, `"m"`, `"h"`, `"c"`)
+- `risk` encoded as text string (`"none"`, `"low"`, `"medium"`, `"high"`, `"critical"`)
 - `data` encoded as CBOR map
 - Omitted optional fields are absent from the map (not null)
 - Media type: `application/vnd.quack+cbor`
@@ -214,7 +212,7 @@ Produces the `capabilities.extensions[]` entry per protocol spec §7.1:
 
 ```json
 {
-  "uri": "https://example.org/ext/quack/v0.1",
+  "uri": "https://example.org/extensions/quack/v0.1",
   "description": "Quack semantic protocol for agent coordination.",
   "required": false,
   "params": {
@@ -253,7 +251,7 @@ Quack-Text encoding (per protocol spec §7.2):
 ```json
 {
   "metadata": {
-    "https://example.org/ext/quack/v0.1": "QK1 quack quackId=01J... src=observer ..."
+    "https://example.org/extensions/quack/v0.1": "QK1 quack quackId=01J... src=observer ..."
   }
 }
 ```

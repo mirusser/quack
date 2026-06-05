@@ -16,7 +16,7 @@ declarations or `A2A-Version` requests.
 Normative extension URI:
 
 ```text
-https://<url_to_be_specified>/extensions/quack-mutation/v0 
+https://example.org/extensions/quack-mutation/v0
 ```
 
 Normative frame media type:

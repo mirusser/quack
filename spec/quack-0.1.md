@@ -371,7 +371,7 @@ interfaces, each interface advertises its A2A `protocolVersion`.
   "capabilities": {
     "extensions": [
       {
-        "uri": "https://example.org/ext/quack/v0.1",
+        "uri": "https://example.org/extensions/quack/v0.1",
         "description": "Quack semantic protocol for agent coordination.",
         "required": false,
         "params": {
@@ -414,7 +414,7 @@ trace hints, and low-friction agent coordination.
   "role": "ROLE_AGENT",
   "parts": [{ "text": "Deployment default/web is crashlooping." }],
   "metadata": {
-    "https://example.org/ext/quack/v0.1": "QK1 quack quackId=01J... source=observer context=k8s/default/web risk=medium summary=\"deployment unavailable\""
+    "https://example.org/extensions/quack/v0.1": "QK1 quack quackId=01J... source=observer context=k8s/default/web risk=medium summary=\"deployment unavailable\""
   }
 }
 ```
